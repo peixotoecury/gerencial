@@ -482,22 +482,22 @@ tab0();
 function tab0() {
   chart('ch-cli-at','bar',
     CLI_AT.map(x=>x[0].split(' ')[0]),
-    [{data:CLI_AT.map(x=>x[1]),backgroundColor:C.set.slice(0,CLI_AT.length).map(c=>c+'cc'),borderColor:C.set.slice(0,CLI_AT.length),borderWidth:1.5,borderRadius:6,barThickness:22}],
+    [{label:'Valores',data:CLI_AT.map(x=>x[1]),backgroundColor:['#006080cc','#1ae3ffcc','#00897bcc','#c9a84ccc','#007a9acc','#e07a1fcc','#c62828cc','#26a69acc','#8d6e63cc','#546e7acc'],borderColor:['#006080','#1ae3ff','#00897b','#c9a84c','#007a9a','#e07a1f','#c62828','#26a69a','#8d6e63','#546e7a'],borderWidth:1.5,borderRadius:6,barThickness:22}],
     { extra:{ plugins:{ datalabels:{ display:true, anchor:'end', align:'top', font:{family:"'DM Mono',monospace",size:10,weight:'600'}, color:'#003a52', formatter:v=>v.toLocaleString('pt-BR') } } } }
   );
   chart('ch-fase-at','bar',
     FASE_AT.map(x=>x[0]),
-    [{data:FASE_AT.map(x=>x[1]),backgroundColor:'#006080bb',borderColor:'#006080',borderWidth:1.5,borderRadius:4,barThickness:18}],
+    [{label:'Processos',data:FASE_AT.map(x=>x[1]),backgroundColor:'#006080bb',borderColor:'#006080',borderWidth:1.5,borderRadius:4,barThickness:18}],
     {horiz:true}
   );
   chart('ch-estado-at','bar',
     ESTADO_AT.map(x=>x[0]),
-    [{data:ESTADO_AT.map(x=>x[1]),backgroundColor:'#006080bb',borderColor:'#006080',borderWidth:1.5,borderRadius:5,barThickness:22}],
+    [{label:'Processos',data:ESTADO_AT.map(x=>x[1]),backgroundColor:'#006080bb',borderColor:'#006080',borderWidth:1.5,borderRadius:5,barThickness:22}],
     {extra:{plugins:{datalabels:{display:true,anchor:'end',align:'top',font:{family:"'DM Mono',monospace",size:10,weight:'600'},color:'#003a52',formatter:v=>v.toLocaleString('pt-BR')}}}}
   );
   chart('ch-grupo-home','bar',
     GRUPOS.map(g=>'G '+g.id),
-    [{data:GRUPOS.map(g=>g.n),backgroundColor:GRUPOS.map(g=>C.grupo(g.id)+'cc'),borderColor:GRUPOS.map(g=>C.grupo(g.id)),borderWidth:1.5,borderRadius:6,barThickness:22}],
+    [{label:'Volume',data:GRUPOS.map(g=>g.n),backgroundColor:GRUPOS.map(g=>C.grupo(g.id)+'cc'),borderColor:GRUPOS.map(g=>C.grupo(g.id)),borderWidth:1.5,borderRadius:6,barThickness:22}],
     {extra:{plugins:{datalabels:{display:true,anchor:'end',align:'top',font:{family:"'DM Mono',monospace",size:9,weight:'700'},color:'#003a52',formatter:v=>v.toLocaleString('pt-BR')}}}}
   );
 
@@ -548,7 +548,7 @@ function tab1() {
   // Volume bar
   chart('ch-g-vol','bar',
     GRUPOS.map(g=>'G '+g.id),
-    [{data:GRUPOS.map(g=>g.n),backgroundColor:GRUPOS.map(g=>C.grupo(g.id)+'cc'),borderColor:GRUPOS.map(g=>C.grupo(g.id)),borderWidth:1.5,borderRadius:6,barThickness:28}],
+    [{label:'Volume',data:GRUPOS.map(g=>g.n),backgroundColor:GRUPOS.map(g=>C.grupo(g.id)+'cc'),borderColor:GRUPOS.map(g=>C.grupo(g.id)),borderWidth:1.5,borderRadius:6,barThickness:28}],
     { extra:{ plugins:{ datalabels:{ display:true, anchor:'end', align:'top', font:{family:"'DM Mono',monospace",size:10,weight:'600'}, color:'#003a52', formatter:v=>v.toLocaleString('pt-BR') } } } }
   );
 
@@ -602,7 +602,7 @@ function tab2() {
   const top10 = PROFS.slice(0,10);
   chart('ch-prof','bar',
     top10.map(p=>p[2]),
-    [{data:top10.map(p=>p[1]),backgroundColor:top10.map(p=>C.grupo(p[3])+'cc'),borderColor:top10.map(p=>C.grupo(p[3])),borderWidth:1.5,borderRadius:5,barThickness:20}],
+    [{label:'Processos',data:top10.map(p=>p[1]),backgroundColor:top10.map(p=>C.grupo(p[3])+'cc'),borderColor:top10.map(p=>C.grupo(p[3])),borderWidth:1.5,borderRadius:5,barThickness:20}],
     {horiz:true, extra:{ plugins:{ datalabels:{ display:true, anchor:'end', align:'right', font:{family:"'DM Mono',monospace",size:10,weight:'700'}, color:'#003a52', formatter:v=>v } } } }
   );
 
@@ -624,6 +624,7 @@ function tab2() {
 function tab3() {
   // Monthly entries chart
   chart('ch-mes','bar', MESES_LABEL, [{
+    label:'Entradas',
     data: ENTRY_MES,
     backgroundColor: ENTRY_MES.map(v => v>=300 ? '#006080' : v>=150 ? '#007a9a' : '#1ae3ff99'),
     borderColor: ENTRY_MES.map(v => v>=300 ? '#006080' : v>=150 ? '#007a9a' : '#1ae3ff'),
@@ -653,7 +654,7 @@ function tab3() {
   const saida15 = SAIDA.slice(5);
   const saldo15 = anos15.map((_,i)=>entry15[i]-saida15[i]);
   chart('ch-saldo','bar',anos15,
-    [{data:saldo15,backgroundColor:saldo15.map(v=>v>=0?'#006080cc':C.red+'cc'),borderColor:saldo15.map(v=>v>=0?C.teal:C.red),borderWidth:1.5,borderRadius:5,barThickness:26}]
+    [{label:'Saldo',data:saldo15,backgroundColor:saldo15.map(v=>v>=0?'#006080cc':C.red+'cc'),borderColor:saldo15.map(v=>v>=0?C.teal:C.red),borderWidth:1.5,borderRadius:5,barThickness:26}]
   );
 
   const anosRec = [2020,2021,2022,2023,2024,2025,2026];
@@ -671,13 +672,12 @@ function tab3() {
 function tab4() {
   chart('ch-enc','bar',
     ENC_TIPO.map(x=>x[0]),
-    [{data:ENC_TIPO.map(x=>x[1]),backgroundColor:[C.grn,C.gray,C.gold,C.gray,C.grn,C.red,C.gold,C.grn].map(c=>c+'bb'),borderColor:[C.grn,C.gray,C.gold,C.gray,C.grn,C.red,C.gold,C.grn],borderWidth:1.5,borderRadius:4,barThickness:18}],
+    [{label:'Quantidade',data:ENC_TIPO.map(x=>x[1]),backgroundColor:[C.grn,C.gray,C.gold,C.gray,C.grn,C.red,C.gold,C.grn].map(c=>c+'bb'),borderColor:[C.grn,C.gray,C.gold,C.gray,C.grn,C.red,C.gold,C.grn],borderWidth:1.5,borderRadius:4,barThickness:18}],
     {horiz:true}
   );
-  const histColors = C.set.slice(0, CLI_HIST.length);
   chart('ch-cli-hist','bar',
     CLI_HIST.map(x=>x[0].split(' ')[0]),
-    [{data:CLI_HIST.map(x=>x[1]),backgroundColor:histColors.map(c=>c+'cc'),borderColor:histColors,borderWidth:1.5,borderRadius:6,barThickness:22}]
+    [{label:'Processos',data:CLI_HIST.map(x=>x[1]),backgroundColor:['#006080cc','#1ae3ffcc','#00897bcc','#c9a84ccc','#007a9acc','#e07a1fcc','#c62828cc','#26a69acc','#8d6e63cc','#546e7acc'],borderColor:['#006080','#1ae3ff','#00897b','#c9a84c','#007a9a','#e07a1f','#c62828','#26a69a','#8d6e63','#546e7a'],borderWidth:1.5,borderRadius:6,barThickness:22}]
   );
 }
 
