@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta http-equiv="refresh" content="3600">
+<title>Dashboard Gerencial — Peixoto &amp; Cury</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&family=DM+Mono:wght@400;600&display=swap');
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Inter',Arial,sans-serif;background:#f0f6f8;color:#050403;width:1120px;margin:0 auto;padding:32px 24px 48px;}
+  .header{background:linear-gradient(135deg,#002236 0%,#003a52 55%,#005070 100%);border-radius:16px;padding:38px 48px;display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;position:relative;overflow:hidden;}
+  .header::before{content:'';position:absolute;right:-50px;top:-70px;width:320px;height:320px;border-radius:50%;background:rgba(26,227,255,.10);}
+  .header::after{content:'';position:absolute;right:80px;bottom:-60px;width:200px;height:200px;border-radius:50%;background:rgba(0,96,128,.25);}
+  .logo-txt{font-size:13px;font-weight:300;color:rgba(255,255,255,.5);letter-spacing:3px;text-transform:uppercase;margin-bottom:8px;}
+  .logo-main{font-size:42px;font-weight:900;color:#fff;line-height:1;}
+  .logo-sub{font-size:16px;font-weight:300;color:rgba(255,255,255,.6);margin-top:6px;}
+  .header-right{text-align:right;position:relative;z-index:1;}
+  .header-tagline{font-size:18px;font-weight:700;color:#fff;line-height:1.35;max-width:360px;}
+  .header-meta{font-size:11px;color:rgba(255,255,255,.45);margin-top:10px;}
+  .header-badge{display:inline-flex;gap:10px;margin-top:14px;}
+  .badge{background:rgba(26,227,255,.18);border:1px solid rgba(26,227,255,.35);color:#1ae3ff;font-size:11px;font-weight:700;padding:5px 14px;border-radius:20px;}
+  .sec-title{font-size:10px;font-weight:700;color:#006080;text-transform:uppercase;letter-spacing:2px;margin:24px 0 12px;display:flex;align-items:center;gap:10px;}
+  .sec-title::after{content:'';flex:1;height:1px;background:#dde8ef;}
+  .kpi-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:24px;}
+  .kpi-card{background:#fff;border-radius:10px;padding:16px 14px;border-left:3px solid #006080;box-shadow:0 2px 10px rgba(0,58,82,.07);}
+  .kpi-card.acc{border-color:#1ae3ff;}.kpi-card.grn{border-color:#00897b;}.kpi-card.gold{border-color:#c9a84c;}.kpi-card.org{border-color:#e07a1f;}.kpi-card.red{border-color:#c62828;}.kpi-card.gy{border-color:#9ab8c4;}
+  .kpi-lbl{font-size:9px;font-weight:700;color:#4a6e7e;text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px;}
+  .kpi-val{font-size:22px;font-weight:700;color:#003a52;font-family:'DM Mono','Courier New',monospace;line-height:1;}
+  .kpi-val.sm{font-size:15px;}.kpi-sub{font-size:9.5px;color:#9ab8c4;margin-top:5px;line-height:1.4;}
+  .fases-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:24px;}
+  .fase-card{background:#fff;border-radius:8px;padding:12px;text-align:center;border:1px solid #dde8ef;}
+  .fase-val{font-size:20px;font-weight:700;color:#003a52;font-family:'DM Mono',monospace;}
+  .fase-lbl{font-size:10px;color:#4a6e7e;margin-top:4px;font-weight:600;}
+  .fase-bar{height:4px;border-radius:2px;background:#1ae3ff;margin-top:8px;}
+  .prof-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px;}
+  .prof-card{background:#fff;border-radius:10px;padding:14px;border:1px solid #dde8ef;}
+  .prof-name{font-size:12px;font-weight:700;color:#003a52;margin-bottom:4px;}
+  .prof-bar-wrap{height:6px;background:#f0f6f8;border-radius:3px;margin:8px 0 4px;}
+  .prof-bar{height:6px;border-radius:3px;background:linear-gradient(90deg,#006080,#1ae3ff);}
+  .prof-meta{font-size:10px;color:#9ab8c4;display:flex;justify-content:space-between;}
+  .fluxo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px;}
+  .flx-card{background:#fff;border-radius:10px;padding:16px;border-left:3px solid #006080;border-top:1px solid #dde8ef;border-right:1px solid #dde8ef;border-bottom:1px solid #dde8ef;}
+  .flx-lbl{font-size:9px;font-weight:700;color:#4a6e7e;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;}
+  .flx-val{font-size:26px;font-weight:700;color:#003a52;font-family:'DM Mono',monospace;}
+  .flx-sub{font-size:10px;color:#9ab8c4;margin-top:4px;}
+  .footer{background:#003a52;border-radius:12px;padding:16px 32px;display:flex;align-items:center;justify-content:space-between;color:rgba(255,255,255,.5);font-size:11px;}
+  .footer strong{color:#1ae3ff;}
+  .pill{font-size:10px;font-weight:600;padding:3px 9px;border-radius:10px;background:#f0f6f8;color:#006080;border:1px solid #dde8ef;}
+  .pill.hi{background:rgba(26,227,255,.12);color:#006080;border-color:rgba(26,227,255,.3);}
+  .grupos-wrap{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:24px;}
+  @media print{body{width:100%;padding:0;}}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <div class="logo-txt">Peixoto &amp; Cury Advogados</div>
+    <div class="logo-main">Dashboard Gerencial</div>
+    <div class="logo-sub">Visão Completa da Carteira de Processos</div>
+    <div class="header-badge">
+      <span class="badge">Base Jun/2026</span>
+      <span class="badge">10.438 processos ativos</span>
+      <span class="badge">Atualizado 01/06/2026</span>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="header-tagline">Inteligência jurídica centralizada —<br/>dados atualizados automaticamente</div>
+    <div class="header-meta">Por grupo · Por profissional · Por fase · Fluxo anual · Histórico desde 1994</div>
+  </div>
+</div>
+
+<div class="sec-title">KPIs da Carteira Ativa — Base Jun/2026</div>
+<div class="kpi-grid">
+  <div class="kpi-card">
+    <div class="kpi-lbl">Total em Andamento</div>
+    <div class="kpi-val">10.438</div>
+    <div class="kpi-sub">processos ativos</div>
+  </div>
+  <div class="kpi-card acc">
+    <div class="kpi-lbl">Recl. Trabalhistas</div>
+    <div class="kpi-val">8.154</div>
+    <div class="kpi-sub">78.1% da carteira</div>
+  </div>
+  <div class="kpi-card grn">
+    <div class="kpi-lbl">Processos Judiciais</div>
+    <div class="kpi-val">10.154</div>
+    <div class="kpi-sub">97.3% · Adm: 284</div>
+  </div>
+  <div class="kpi-card gold">
+    <div class="kpi-lbl">Principal Cliente</div>
+    <div class="kpi-val sm">BRIDGESTONE</div>
+    <div class="kpi-sub">1.434 proc — Grupo B1</div>
+  </div>
+  <div class="kpi-card org">
+    <div class="kpi-lbl">Fase Instrução</div>
+    <div class="kpi-val">2.641</div>
+    <div class="kpi-sub">maior fase ativa</div>
+  </div>
+  <div class="kpi-card gy">
+    <div class="kpi-lbl">Recursal Total</div>
+    <div class="kpi-val">2.620</div>
+    <div class="kpi-sub">Recursal+TST+TRT</div>
+  </div>
+</div>
+
+<div class="sec-title">Distribuição por Grupo — Carteira Ativa</div>
+<div class="grupos-wrap"><span class="pill hi">Grupo E2: 2.029</span><span class="pill hi">Grupo E1: 1.786</span><span class="pill hi">Grupo B1: 1.430</span><span class="pill hi">Tributário - Indiretos: 997</span><span class="pill hi">Cível: 945</span><span class="pill hi">Grupo D1: 802</span></div>
+
+<div class="sec-title">Distribuição por Fase Processual — Carteira Ativa</div>
+<div class="fases-grid">
+  <div class="fase-card">
+    <div class="fase-val">2.641</div><div class="fase-lbl">Instrução</div>
+    <div class="fase-bar" style="width:100%;background:#1ae3ff"></div>
+  </div>
+  <div class="fase-card">
+    <div class="fase-val">1.970</div><div class="fase-lbl">Recursal</div>
+    <div class="fase-bar" style="width:75%;background:#006080"></div>
+  </div>
+  <div class="fase-card">
+    <div class="fase-val">1.398</div><div class="fase-lbl"></div>
+    <div class="fase-bar" style="width:53%;background:#00897b"></div>
+  </div>
+  <div class="fase-card">
+    <div class="fase-val">1.123</div><div class="fase-lbl">Execução</div>
+    <div class="fase-bar" style="width:43%;background:#c9a84c"></div>
+  </div>
+  <div class="fase-card">
+    <div class="fase-val">661</div><div class="fase-lbl">1ª Instância</div>
+    <div class="fase-bar" style="width:25%;background:#c9a84c"></div>
+  </div>
+  <div class="fase-card">
+    <div class="fase-val">441</div><div class="fase-lbl">2ª Instância</div>
+    <div class="fase-bar" style="width:17%;background:#e07a1f"></div>
+  </div>
+  <div class="fase-card">
+    <div class="fase-val">369</div><div class="fase-lbl">Recursal TST</div>
+    <div class="fase-bar" style="width:14%;background:#e07a1f"></div>
+  </div>
+  <div class="fase-card">
+    <div class="fase-val">284</div><div class="fase-lbl">Administrativa</div>
+    <div class="fase-bar" style="width:11%;background:#9ab8c4"></div>
+  </div>
+  <div class="fase-card">
+    <div class="fase-val">232</div><div class="fase-lbl">Conhecimento</div>
+    <div class="fase-bar" style="width:9%;background:#9ab8c4"></div>
+  </div>
+  <div class="fase-card">
+    <div class="fase-val">232</div><div class="fase-lbl">Liquidação</div>
+    <div class="fase-bar" style="width:9%;background:#9ab8c4"></div>
+  </div>
+</div>
+
+<div class="sec-title">Top Profissionais — Maior Carteira Individual</div>
+<div class="prof-grid">
+  <div class="prof-card">
+    <div class="prof-name">1. Marcos Araújo</div>
+    <div class="prof-bar-wrap"><div class="prof-bar" style="width:100%"></div></div>
+    <div class="prof-meta"><span>507 processos</span><span></span></div>
+  </div>
+  <div class="prof-card">
+    <div class="prof-name">2. Jessica Silva</div>
+    <div class="prof-bar-wrap"><div class="prof-bar" style="width:89%"></div></div>
+    <div class="prof-meta"><span>452 processos</span><span></span></div>
+  </div>
+  <div class="prof-card">
+    <div class="prof-name">3. Paloma Santos</div>
+    <div class="prof-bar-wrap"><div class="prof-bar" style="width:86%"></div></div>
+    <div class="prof-meta"><span>435 processos</span><span></span></div>
+  </div>
+  <div class="prof-card">
+    <div class="prof-name">4. Gabriel Donato</div>
+    <div class="prof-bar-wrap"><div class="prof-bar" style="width:83%"></div></div>
+    <div class="prof-meta"><span>421 processos</span><span></span></div>
+  </div>
+  <div class="prof-card">
+    <div class="prof-name">5. Guilherme Staingel</div>
+    <div class="prof-bar-wrap"><div class="prof-bar" style="width:81%"></div></div>
+    <div class="prof-meta"><span>413 processos</span><span></span></div>
+  </div>
+  <div class="prof-card" style="background:#f0f6f8;border-color:#dde8ef;">
+    <div class="prof-name" style="color:#4a6e7e;">Média geral</div>
+    <div class="prof-bar-wrap"><div class="prof-bar" style="width:28%;background:#9ab8c4"></div></div>
+    <div class="prof-meta"><span style="color:#006080;font-weight:700;">1740 proc/prof.</span><span>ativos</span></div>
+  </div>
+</div>
+
+<div class="sec-title">Fluxo Anual — Entradas e Saídas</div>
+<div class="fluxo-grid">
+  <div class="flx-card" style="border-color:#1ae3ff">
+    <div class="flx-lbl">Maior Entrada (ano)</div><div class="flx-val">7.939</div><div class="flx-sub">2022 — pico histórico</div>
+  </div>
+  <div class="flx-card" style="border-color:#00897b">
+    <div class="flx-lbl">Entradas 2025</div><div class="flx-val">4.042</div><div class="flx-sub">processos novos no ano</div>
+  </div>
+  <div class="flx-card" style="border-color:#006080">
+    <div class="flx-lbl">Entradas 2026</div><div class="flx-val">1.484</div><div class="flx-sub">jan–jun/2026</div>
+  </div>
+  <div class="flx-card" style="border-color:#c62828">
+    <div class="flx-lbl">Maior Saída (ano)</div><div class="flx-val">9.458</div><div class="flx-sub">2023 — pico encerramentos</div>
+  </div>
+  <div class="flx-card" style="border-color:#e07a1f">
+    <div class="flx-lbl">Saídas 2025</div><div class="flx-val">3.700</div><div class="flx-sub">processos encerrados</div>
+  </div>
+  <div class="flx-card" style="border-color:#00897b">
+    <div class="flx-lbl">Saldo 2025</div>
+    <div class="flx-val" style="color:#00897b">+342</div>
+    <div class="flx-sub">entradas − saídas</div>
+  </div>
+</div>
+
+<div class="sec-title">Base Histórica — 94.520 processos desde 1994</div>
+<div class="kpi-grid">
+  <div class="kpi-card">
+    <div class="kpi-lbl">Total Histórico</div>
+    <div class="kpi-val" style="font-size:18px">94.520</div>
+    <div class="kpi-sub">desde 1994</div>
+  </div>
+  <div class="kpi-card grn">
+    <div class="kpi-lbl">Favoráveis</div>
+    <div class="kpi-val">7.150</div>
+    <div class="kpi-sub">48% de êxito</div>
+  </div>
+  <div class="kpi-card gold">
+    <div class="kpi-lbl">Acordos</div>
+    <div class="kpi-val">11.785</div>
+    <div class="kpi-sub">por composição</div>
+  </div>
+  <div class="kpi-card red">
+    <div class="kpi-lbl">Desfavoráveis</div>
+    <div class="kpi-val">7.752</div>
+    <div class="kpi-sub">contra o cliente</div>
+  </div>
+  <div class="kpi-card gy">
+    <div class="kpi-lbl">Arquivados</div>
+    <div class="kpi-val">11.809</div>
+    <div class="kpi-sub">autos arquivados</div>
+  </div>
+  <div class="kpi-card acc">
+    <div class="kpi-lbl">Encerrados Total</div>
+    <div class="kpi-val" style="font-size:18px">84.082</div>
+    <div class="kpi-sub">89% da base</div>
+  </div>
+</div>
+
+<div class="footer">
+  <div>Peixoto &amp; Cury Advogados &nbsp;·&nbsp; <strong>Controladoria</strong> &nbsp;·&nbsp; Dashboard Gerencial</div>
+  <div>Atualizado em: <strong>01/06/2026</strong> &nbsp;·&nbsp; <strong>peixotoecury.github.io/gerencial</strong></div>
+</div>
+
+</body>
+</html>

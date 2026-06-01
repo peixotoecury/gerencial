@@ -1,0 +1,6 @@
+﻿*.xlsx
+*.xlsm
+*.csv
+*.log
+*.py
+config_local.py
