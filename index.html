@@ -1,710 +1,479 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard Gerencial — Peixoto & Cury</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=DM+Mono:wght@400;500&family=Playfair+Display:wght@400;600&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<meta http-equiv="refresh" content="3600">
+<title>Gerencial Trabalhista — Peixoto &amp; Cury</title>
 <style>
-:root {
-  /* Identidade visual oficial Peixoto & Cury */
-  --navy:#003a52;        /* Pantone 302C escurecido — base header */
-  --teal:#006080;        /* Pantone 302C oficial */
-  --teal2:#007a9a;       /* variação intermediária */
-  --accent:#1ae3ff;      /* Pantone 2995c oficial — azul vivo */
-  --black:#050403;       /* Black C oficial */
-  --red:#c62828; --org:#e07a1f; --grn:#00897b; --gold:#c9a84c;
-  --purple:#006080; --gray1:#f0f6f8; --gray2:#dde8ef; --gray3:#9ab8c4;
-  --gray4:#4a6e7e; --dark:#050403; --white:#fff;
-  --shadow:0 1px 3px rgba(0,40,60,.06),0 4px 16px rgba(0,40,60,.09);
-}
-*{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'DM Sans',sans-serif;background:var(--gray1);color:var(--dark);}
-
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&family=DM+Mono:wght@400;600&display=swap');
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Inter',Arial,sans-serif;background:#f0f6f8;color:#050403;min-height:100vh;}
 /* HEADER */
-.hdr{background:linear-gradient(135deg,#003a52 0%,#006080 100%);height:58px;display:flex;align-items:center;justify-content:space-between;padding:0 32px;position:sticky;top:0;z-index:200;box-shadow:0 2px 20px rgba(0,0,0,.3);}
-.hdr::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#1ae3ff 0%,#006080 50%,transparent 80%);}
-.hdr-left{display:flex;align-items:center;gap:14px;}
-.logo-box{width:36px;height:36px;background:linear-gradient(135deg,var(--accent),var(--teal));border-radius:9px;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;color:#fff;font-size:16px;font-weight:600;letter-spacing:-1px;flex-shrink:0;}
-.hdr-brand{color:#fff;font-size:14px;font-weight:600;letter-spacing:-.2px;}
-.hdr-sub{color:rgba(255,255,255,.4);font-size:10px;letter-spacing:.5px;text-transform:uppercase;margin-top:1px;}
-.hdr-badge{background:rgba(26,227,255,.1);border:1px solid rgba(26,227,255,.3);color:#1ae3ff;border-radius:20px;padding:4px 14px;font-size:10px;font-weight:600;}
-.hdr-date{color:rgba(255,255,255,.3);font-size:11px;font-family:'DM Mono',monospace;}
-
+.hdr{background:linear-gradient(135deg,#002236 0%,#003a52 55%,#005070 100%);padding:28px 40px 0;position:sticky;top:0;z-index:100;box-shadow:0 2px 16px rgba(0,0,0,.3);}
+.hdr-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
+.logo{font-size:22px;font-weight:900;color:#fff;}
+.logo span{color:#1ae3ff;}
+.hdr-meta{font-size:11px;color:rgba(255,255,255,.5);text-align:right;}
+.hdr-meta strong{color:#1ae3ff;}
+.badge{background:rgba(26,227,255,.18);border:1px solid rgba(26,227,255,.3);color:#1ae3ff;font-size:10px;font-weight:700;padding:3px 10px;border-radius:12px;margin-left:6px;}
 /* TABS */
-.tabs{background:#fff;padding:0 32px;border-bottom:2px solid var(--gray2);display:flex;gap:0;overflow-x:auto;position:sticky;top:58px;z-index:100;scrollbar-width:none;}
-.tabs::-webkit-scrollbar{display:none;}
-.tab-btn{background:none;border:none;padding:15px 22px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;color:var(--gray4);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .2s;white-space:nowrap;display:flex;align-items:center;gap:7px;}
-.tab-btn:hover{color:#006080;}
-.tab-btn.active{color:var(--teal);border-color:#1ae3ff;font-weight:700;}
-
-/* LAYOUT */
-.main{padding:28px 32px;max-width:1600px;margin:0 auto;}
-.tab-content{display:none;}
-.tab-content.active{display:block;animation:fu .25s ease;}
-@keyframes fu{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
-.sec{font-size:10px;font-weight:700;color:var(--gray4);text-transform:uppercase;letter-spacing:1px;margin:28px 0 14px;display:flex;align-items:center;gap:10px;}
-.sec::after{content:'';flex:1;height:1px;background:var(--gray2);}
-.sec:first-child{margin-top:4px;}
-
-/* KPI */
-.kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:20px;}
-.kcard{background:#fff;border-radius:12px;padding:18px 20px;box-shadow:var(--shadow);border-left:3px solid #006080;transition:transform .18s;}
-.kcard:hover{transform:translateY(-2px);}
-.kcard.acc{border-color:var(--accent);}
-.kcard.grn{border-color:var(--grn);}
-.kcard.red{border-color:var(--red);}
-.kcard.org{border-color:var(--org);}
-.kcard.gold{border-color:var(--gold);}
-.kcard.gy{border-color:var(--gray3);}
-.kcard.nav{border-color:#006080;}
-.klbl{font-size:9.5px;font-weight:700;color:var(--gray4);text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px;}
-.kval{font-size:28px;font-weight:700;color:var(--navy);line-height:1;font-family:'DM Mono',monospace;}
-.kval.sm{font-size:18px;}
-.ksub{font-size:10px;color:var(--gray3);margin-top:4px;}
-
-/* CARDS GRID */
-.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
-.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:16px;}
-.g-wide{display:grid;grid-template-columns:2fr 1fr;gap:16px;margin-bottom:16px;}
-.g-full{margin-bottom:16px;}
-.cc{background:#fff;border-radius:12px;padding:20px 22px;box-shadow:var(--shadow);}
-.cc.span2{grid-column:1/-1;}
-.ct{font-size:12px;font-weight:700;color:var(--navy);margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;}
-.ct-sub{font-size:10px;color:var(--gray3);font-weight:400;}
-.cw{position:relative;}
-.h180{height:180px;} .h200{height:200px;} .h220{height:220px;} .h280{height:280px;} .h260{height:260px;} .h300{height:300px;} .h340{height:340px;}
-
-/* TABLES */
-.tc{background:#fff;border-radius:12px;box-shadow:var(--shadow);overflow:hidden;margin-bottom:16px;}
-.th{background:var(--navy);color:#fff;padding:13px 20px;font-size:11px;font-weight:700;letter-spacing:.3px;display:flex;align-items:center;justify-content:space-between;}
-.th-badge{background:rgba(255,255,255,.15);border-radius:10px;padding:2px 10px;font-size:10px;font-weight:400;}
-.ts{overflow-x:auto;max-height:400px;overflow-y:auto;scrollbar-width:thin;}
-table{width:100%;border-collapse:collapse;}
-thead th{background:#f0f7fa;color:var(--gray4);font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:9px 16px;text-align:left;border-bottom:1px solid var(--gray2);white-space:nowrap;position:sticky;top:0;z-index:2;}
-tbody td{font-size:12px;color:var(--dark);padding:9px 16px;border-bottom:1px solid #f2f5f7;}
-tbody tr:last-child td{border-bottom:none;}
-tbody tr:hover td{background:#f6fbfd;}
-.tn{text-align:right;font-family:'DM Mono',monospace;}
-.tc-pill{display:inline-block;padding:2px 9px;border-radius:20px;font-size:10px;font-weight:600;white-space:nowrap;}
-.p-acc{background:rgba(0,188,212,.1);color:var(--teal2);}
-.p-grn{background:#e6f4f1;color:var(--grn);}
-.p-org{background:#fff3e0;color:var(--org);}
-.p-red{background:#ffebee;color:var(--red);}
-.p-gold{background:#fdf6e3;color:#a07800;}
-.p-gy{background:var(--gray2);color:var(--gray4);}
-.p-purple{background:#f0eeff;color:var(--purple);}
-
-/* GRUPO CARDS */
-.ggroups{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;margin-bottom:20px;}
-.gcard{background:#fff;border-radius:14px;padding:18px 20px;box-shadow:var(--shadow);border-top:4px solid var(--teal2);position:relative;overflow:hidden;}
-.gcard::before{content:'';position:absolute;top:-30px;right:-30px;width:90px;height:90px;border-radius:50%;background:currentColor;opacity:.04;}
-.gcard.cE{border-color:var(--purple);}
-.gcard.cB{border-color:var(--grn);}
-.gcard.cD{border-color:var(--org);}
-.gcard.cA{border-color:var(--accent);}
-.gcard.cC{border-color:var(--gold);}
-.gcard.cS{border-color:var(--gray3);}
-.g-name{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:6px;}
-.g-num{font-family:'DM Mono',monospace;font-size:30px;font-weight:700;color:var(--navy);line-height:1;}
-.g-sub{font-size:10px;color:var(--gray3);margin-top:2px;margin-bottom:12px;}
-.g-profs{display:flex;flex-direction:column;gap:5px;}
-.g-prof-row{display:flex;align-items:center;gap:8px;}
-.g-sigla{font-family:'DM Mono',monospace;font-size:10px;font-weight:600;color:#fff;background:var(--navy);border-radius:4px;padding:1px 5px;min-width:34px;text-align:center;}
-.g-prof-name{font-size:11px;color:var(--dark);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.g-prof-n{font-family:'DM Mono',monospace;font-size:11px;font-weight:600;color:var(--navy);}
-.g-bar-wrap{margin-top:4px;height:3px;background:var(--gray2);border-radius:99px;overflow:hidden;}
-.g-bar-fill{height:100%;border-radius:99px;}
-
-/* BAR ROWS */
-.bar-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
-.bar-lbl{font-size:11px;color:var(--dark);min-width:170px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.bar-track{flex:1;height:6px;background:var(--gray2);border-radius:99px;overflow:hidden;}
-.bar-fill{height:100%;border-radius:99px;transition:width .5s cubic-bezier(.4,0,.2,1);}
-.bar-val{font-family:'DM Mono',monospace;font-size:11px;color:var(--gray4);min-width:36px;text-align:right;}
-
+.tabs{display:flex;gap:0;}
+.tab-btn{padding:10px 28px;font-size:13px;font-weight:700;color:rgba(255,255,255,.5);background:transparent;border:none;border-bottom:3px solid transparent;cursor:pointer;font-family:inherit;transition:all .2s;letter-spacing:.3px;}
+.tab-btn:hover{color:rgba(255,255,255,.8);}
+.tab-btn.active{color:#fff;border-bottom-color:#1ae3ff;}
+/* CONTEÚDO */
+.tab-pane{display:none;padding:28px 40px 48px;}
+.tab-pane.active{display:block;}
+/* KPI GRID */
+.kpi-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:24px;}
+.kpi-card{background:#fff;border-radius:10px;padding:16px 14px;border-left:3px solid #006080;box-shadow:0 2px 8px rgba(0,58,82,.07);}
+.kpi-card.acc{border-color:#1ae3ff;}.kpi-card.grn{border-color:#00897b;}.kpi-card.gold{border-color:#c9a84c;}.kpi-card.org{border-color:#e07a1f;}.kpi-card.red{border-color:#c62828;}.kpi-card.gy{border-color:#9ab8c4;}
+.kpi-lbl{font-size:9px;font-weight:700;color:#4a6e7e;text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px;}
+.kpi-val{font-size:22px;font-weight:700;color:#003a52;font-family:'DM Mono',monospace;line-height:1;}
+.kpi-val.sm{font-size:16px;}.kpi-sub{font-size:9.5px;color:#9ab8c4;margin-top:5px;line-height:1.4;}
+/* GRID 3 COLS */
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px;}
+.grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-bottom:24px;}
+.pnl{background:#fff;border-radius:12px;padding:18px 20px;border:1px solid #dde8ef;box-shadow:0 2px 8px rgba(0,58,82,.05);}
+.pnl-title{font-size:10px;font-weight:700;color:#006080;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.pnl-title::after{content:'';flex:1;height:1px;background:#f0f6f8;}
+/* BARRAS */
+.br{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.br-lbl{font-size:11px;color:#003a52;width:160px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.br-wrap{flex:1;height:6px;background:#f0f6f8;border-radius:3px;}
+.br-bar{height:6px;border-radius:3px;transition:width .4s;}
+.br-val{font-size:11px;font-weight:700;color:#003a52;width:52px;text-align:right;font-family:'DM Mono',monospace;flex-shrink:0;}
+/* RESULTADO */
+.res-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px;}
+.res-card{background:#f0f6f8;border-radius:8px;padding:12px;text-align:center;}
+.res-val{font-size:20px;font-weight:700;font-family:'DM Mono',monospace;}
+.res-lbl{font-size:10px;color:#4a6e7e;font-weight:600;margin-top:3px;}
+.grn-txt{color:#00897b;}.red-txt{color:#c62828;}.gold-txt{color:#c9a84c;}.org-txt{color:#e07a1f;}.blu-txt{color:#1ae3ff;}
+/* FOOTER */
+.footer{background:#003a52;padding:14px 40px;display:flex;align-items:center;justify-content:space-between;color:rgba(255,255,255,.45);font-size:11px;}
+.footer strong{color:#1ae3ff;}
 @media(max-width:900px){
-  .main,.hdr,.tabs{padding-left:16px;padding-right:16px;}
-  .g2,.g3,.g-wide{grid-template-columns:1fr;}
-  .kpi-row{grid-template-columns:1fr 1fr;}
-  .ggroups{grid-template-columns:1fr 1fr;}
+  .kpi-grid{grid-template-columns:repeat(3,1fr);}
+  .grid3,.grid2{grid-template-columns:1fr;}
+  .hdr,.tab-pane{padding-left:16px;padding-right:16px;}
+  .br-lbl{width:120px;}
 }
 </style>
 </head>
 <body>
 
-<header class="hdr">
-  <div class="hdr-left">
-    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAARkAAABnCAYAAAA0TzYSAAAQAElEQVR4AexdB2AcxdV+syfZssGGUEMLujPGBkwJLaFDgISWAgSDTrKNQw8ttNACFgmEGkLokFBcdDKhJUAChB6wIUBC+QHjIp0IAZLQQnOTbuf/vjvdaW5u73b3dGrmpHk37b03ZWfezrwp60gieQzgKUl0PAZ4ZEChteNR5OVxwD3IxyxpTc6W1o7fw38r4JeAn0pLx0Eys31LuXrhcKn+VWugWgODvgYcUXKyKLWrKPkWYK8BBZE9Rak9AAeKkkYRdaiIHCJKTQWcDbhUHLlbapyXZY3adgidB6Wl/XRpSW4FvKqp1kC1BgZhDTgi6l0Zin9K1oXQ2Ucc53Jx1EsY9TwvifYTZfq81Ydicap5rtbAiloDjmj8rxClU9uJcq6W2rp2TLEul9+9vtoKUaxqIULVQBV58NUARjKDL1O9ypFSo0F/uowc2YZp1MlwV021Bqo1MIA1sOIJmWxlKrUqplFXSSL5pLQsiGWDq3a1Bqo10L81sOIKmWw9KrWbOMNeg7D5QTaoaldroFoD/VcDK76QydTlCCiJ76309CnDuvpbrYFqDZSqgYBCRv9TtH55YEBeh2r6XwC3VEECxTmK06efBsKtIlVroFoDFamBAEIGAmZ+xxiJR78+MFA/QT77ICbaBciO4uqfoOR3Quh8CDu8UepSLHefEp6wSlGtgWoNlFMD/kJGyyfSvEdXOcwrRnPMtp3SGHtL4vXPSmP0N9JQP1Hczpi4qSYIm8fDp6OulNb2H4anq1JUa2AFroE+Kpq/kFGyCtJWgMFlmsZ+Ko1jWiB49sToZh8R/Vy4DDp3ysz2ceFoqtjVGqjWQNga8BcyIr3XhYTNVVj8xujD0hDdQbScHoq0Rj0UCr+KXK2Bag2EroEgQiY00wEjiNf/CrqbLZF+GyCAUfXSmrw+AGIoFK31moDxgGgPLIGboGGbwLClY7RevL7W//tKqIQsZKTlka6ZVmj3OPD8qpVMgRc4qwI2AbBstFctQDICgLcuYGsA8Qmsq1EGSign+KwEIA/yisG9HWBkKCYGMmhHAfYHXAT4PWAO4KVueAz2rYCzATsbZKGcoB0BGAtgfpnvSgLrouzjNcjTeoDJgF8B7gP8DcDyvwD7QcC1gOMBgWYCK5aQ4WOOx16VxUu/DuccQACjjpOZC7cOgBgG5WogzwO098AwuAkC2wSG1S4SGY7wUe14cAsACcBE0IY1HumaaYV2v4kMzAT4GSrj3wASyiC0/XZaryYif+/GJw3rah7KPAxhoUw3zesgIg/y4gtmNvyh2zZ4bQBgHZLPA+BxDuAQwI4AHsIlfAvuqYBfAp4G/huAUwFh09sJ9AsAzC/TqySwLprBO5RBGXYG/B5EzMt02KcCvgvYHsCybwsbqgk5Hva1gDeB/yiAB5nh9TZhK8aby2ALPWL8Z9JQv7No/WygrEVqEoHwgiONCI6aw6yFiyOAsbAbAHfg4c0FbAp3UFNOun68g4wI7Gs3bH9eGkqp1xBwJsA068HDhg0rlCHNhhZFI9L43Aor6UU9s+Ow058IxDUAQc0mQPwVgMImzMimBjR9aerCMEf5KTSeBg2FahhhvydoZoOeIxzPUe+KKWRQ6rT5oGsPESzBpz0lfpQaJ7M64iUwwkW5ssQmcMWRDAjsHhCE50Me5Q7wvYwHyLcInL6mIF1fCn+ENf1RZJmFY/utaBEIgctE5CmAaQ5DWfc1A0q5u3EPs3B+Bt6hFgHA50bwYCfz6pifIe5lwKOAvwI4SoBVYDh14MhmSkGMd0BJQexNEio00NQbZa8D/A2cKWRhFZj3EPIi4GEA67UDtpfhCIdtteCluGILmZPGLpOuFCWtV6Xkh0X0VfkBFfXdCW7HAfiWtOEEhPMBnwt7BuDfANNwhPMEGsJKZmBANzsFOzM7UDlwA9Lh9AFWnxge9VhuceYIzvdNivogzh0W7UsQMBdZYSW94EOd3DEeSH9AGPMXA8+vA/YG7AZgJ9oIcUcAXgLY5nbw3M8O9PBzKsq0r0NcsWdzOeL+AjDNQng4croGdjE6Ck27boDuaahW4HTIjvwtAnYHsPzbodz7APjS4znALRB+PuADgGnWhudZlD/vxbRiCxmUWCZttEhc/WM6S4NaUxJJTlNKo5UXe0dEqRsB19qAB3cd4HrALwF8C/IhXmIlw2kUH6oV7Osl7zPB98Qy4cegY0P2TagcBPD+H+gmA0xDBTCnQGaYl5s4xDXjvm96/NzoDEcCh8IfVs4wTwcgbwcC/giwO5IgrA1wK4C6vLNzlD2OP4G359QhiwLa+YDjAScAij0f7k6n7idLRvtJ4J8OOAlQjO44xPHFRvyigDxSd8UymDgvwLMZ6I8GPAVYCn/OwK8B/wf4BQIpbGfBNs1oePIE44ovZFBiaYzijaxfodMHvBqMD0mg6HUCYQEJD28JgPmwFa5HolGEncfnvVHAftAZlJVv3HusjJWcNqEeODq1p0nssG9bfIp6wWMtRPJtDStnPoJrG+TpT7ADGeDyhUA9ho3Pctlh5fhtYbVyOUxsGpSfCl1bYUsBtj3KROW9TVLgB94ngEmI+DXANFuBf07n9uUQMpniew2JMzHZX6U2lxmLJmS9A2xz+qSNPPASrs0NfxCnCoI0CHCoD6Puw8wKp00Fegs03giQuAICK2fYOTj1yAUEcHhNj7+FTsOVlQDkPSiguQs+vhhg5cyuyOteOV/5DvsZ2v5yOf/OIuQNmVw5s4L9vSg/V6GoszKRL0H503qhL4+QaYj+LdBqU41jvyHNius3Nx4c38pJK0H7rWZFD00vykpF8UFW7jkVskcaRGHnoMClm0CdzoF0BAU0/g2Aa0+NL0Q+gox2QVpoQMsRjU1vT3UKCcsK6R0Ryt8IDhzJwcqZH6IM5kstFxHQwdFcp4XLrQ3ppQ0rfAC9rW+uK4n2LWRm+y7SkvyOtLTtBf/eaWht21amt20sM14pRwGaLRSVoFl3EVvtXyRiIILtZdjeNIKByH/gNNHA+Sa0hcokdAisEGbYdLsPz/hyv5NBSz1KLiCA40gL53/gcZ4VVo6XSn2TjpsCNzYDBombCw1mVh5B+YNt9zCpDDfo+Qzs0eFRRBm4kcxtyXqZlTxUEh2XSSL5uLQm54sMbxflvCI1zl/FUQ+JE3kE/r+kQSIvyLDIfKkZ3S6tyZdBcwfgfJnVdgCEEfeWsDylIR79o2j5uCSSUltiyrRWSZx+iESH4rB4fSup5ZZ/hfIqpY5Ggd4BmIZTkazfdDPsXtCUo/uwFcQcHZFfrwB5eRoMuNcGVs4MqoO4aFds21wlymUQjisAlTC2bmYdpLdd/wqZxMLNIFTOldaOZ6ROtUtEzRYlZ4hSeFspSHxVMAcvKLlSqCQIAqUmgu4CiUTuhzBaAIEzD8Lnbkm0ldoQpUXpBwt45gcoidRwZ6OU/VeZWuWyojktYHaK7dFgnBdor8BBHsZlYzOLq6GhTiMg0KwP6nCoy0FwcAM+awObS7CwcsZWPOciynDYvEq1xzLY95rEzg9HIGXcZFCYD6UU99Q8b8XsGaQ7RCyicN7m14ZJS/skCBeMSmpfEyUXgsFOAL6pYVXIKDVeRGFeH3lKbkt6baqS9J+rA1Soy70QafQB/LGHntwDwocYJkvvh0H2xu3fUDRUbvy62Eq1GX4CrJw5CLh5y6u5mNKOzRBttr1P4ffa74Lgssxciwrt0goZWK+9sfNvqMdKXuXypFW8CUGEzGiLKJiXuhN+eG3cSovEcWZAuFRC0+6fthJH6tw9peif4pmZorHpCCXRtF25H3sKUJQz3rQTAI8A4ZsA03BjlukP4uYhtkvB75qQwANwN4Bm1yCJVBoHjZ5nhkqN2m4BDnU45SRdbxEtAK9yhJXFJuddlHNlHJwyrJlxDopfewoeaLk6RM7bLNz6AEJGcR4cfNh9yO8jGLmcDt1JG4QLOoaiJt9Kt6+9Ee5U9E6ka+nbWGXyaVQOh9Te9OWFHqV1Z7M3aIRrnvb9LTr1M2D/fwBbIPNt04rwsIZC4qcg4q7iMEDF4LGgK16PiOxj8x3w9xq5PQuhYCtugRrYcNXKRC7YbGdGluHm9MMcGXBUXd6LuozEA5BwY6eJ9l/TUwG3zW90aSGj5W5pqA/+QBPtE+XA7ealhYtSle6owcuvNfQ7RdCnbPKhZOaORRAQrMR+ENLLv31FnGlp0DXTxAQRhAvf3KxnTiPF+uObgedCrOB+8S7ul1Q8EoEgeRvB/wHYhtMpOyyM316d/CQMcQBcrghS0JiorukZYDcvoTOzUOny2wsrqeJChgImXv9DMzdF3bcl66HMvV+Ucwc6cLCVHk9mFQpUUnqHrdaVrtgKZbyAzR0I4bkZu9EiOJDhgUm+WUgfFthZBqyeMKr7OUpo6w8QJCcijiM0ussBe4VuRDlMStBw8cI+uR4pgd/fUXyuZpp2Xs24ctz2juSaIkJG3yNBBUwiOVWGC+fPB5SToz6h0cIhagnWyhzOFuJpXaReClEDhnwIPB6I4wnWYvBP4CwCcL/ClbB3UkodBuAqCrxlmWZQ8SxUuTAD9P1uIES2QaKl9q3cC5xyO65dn5XWl3AUbHZctjUKexRpUBj7xVH25VZFSmNfk7HEozPpp6UhenARBvnBiY6bMXK5FeDTqfPJiviSIvpJcfWN0JlME9Eni3YniSsHi+tOFq1PQVizaPkd6OfC5jZoOL2Met8r1AgzG4ERnHNyB2rOUwFHs1KRTUQiMail80EkBv5pgEAZC9gRcBrAXqUAWmjzX/D5AvBxGfA+aCpdD0ELcJ+FyNPkFMLZYC5l84Bk1h/G5jTMxOeNdMoM6KV7XYueUz77ZL2F0q/e96zU2PasoF55eS+QyeAtW8gkZX6H//mF25Jfldbk86IkvaPP5BjYrfV/IChaIECOlM6uzaWhPiYN0T2kMXqcxKM/h/tqicdmSWP9PdIYm4mwqxB2gcTrj5KG+p3kg86YpFLbQ/CcijR5i5nxttD/Qpi3uXohh7NreUd2hypfIdWNGNhaSkylRCtR+aDgz0CKOBWGlSvMr8/ZYYRyCxIxO6qr+BVQEd5Gh6icaQRuOaPneTkOGQePalRyim+eamYK7ch/Xzxb8i4H7PJ/oxwmJWhsfvMhZDSHc6DRyyTVuas0+3z+hDf818lLImo7KesPUzFxD5HPPoxBYDRBgNwikzd6LTQr3hXTNOYFaYj+WhrqvytLdUy0C6Gnn0M/5iqNN8tVU+uKEntIl4+rpdJvnkqM9PLzuAL6IDT2QbF+BDBNWrigo3J/E0c0Zhzv3w2lUwEfjJiFYPL5tunppft7Fj0vhLKCBtRr94161Dv3DvU6U+DDKay9fWQOhIzKzEldta80jS0+AmAWWpJbSY1DAUPpz5DgoPV00Z0ThFOxhthdcsy2lV25mBr9N0Y+vwP/HaQhZp+BkdyfU+e/OUrrZA6/6uiXGkADpbC4x0rsRNZbpAAAEABJREFUQQgFUy9kX01AGt97Uyye9Nq7vu07ZYgTGlCGdUC0B8A0fzA9A+1GfVLvZ49mAty3FCjnPHi5koHJ2cVTEDJY7tV6NqYlTxiRhc5EcjxGAFRK8sEWxhcL0foP6elQPHq4xMfywudimP0TroSXQvukpaik9cGpRle4BihgzLbFVaA8oYIOwhGm3SH4VQE27jDZ4ZTMxN8UAsI+z2TGB3VfbiH+E3meY4UNBu9tViaORvm/YoWV4/2FRXQHyr/YEa1PkHi09BmQ6fNWF6XmAIIP+6lz4bQoHj2wrOmQlduKeZW2h7M265SoZdwQZ4cPdv+QzR8aOK+y5FTJLMNkNFB7JQhNUN0AJHuvzAzwoDIYUf4GfP8BLHsaw2szg7dvMDAN0qcu0xZ2dqczSQbSfT0S71aTwCVSg19ul4BVnkH5LwLl1wCmuYQeBzoRDkc1PUWhdgQvfA78EEX0H2Xx4k0xbbmrKM+BiKA+SSn7cFx+TrR+VeLjKr0LND+Nqi9XA2ic68LDFUNYOeN3uvqgHGbG4cAKOy05BjSmWRWeRwGhDcowHkR/BpjmLQgzu1xm/IC5ka8vkLh9ydbeKEdZp7FBNwn8uKEUVs5MRzrz6ePDoV0cEslWURJcMeS650Mv8gM5cjNeZVic70DE1KiTAyRrKxcDkAxaFC6fDtrMdWfsvm47a3Eeb48IsnFpG42Xy9Bnpj09P7ugsdtTqZ5YywUevGDqN1bwTuDBD7mtb4UX9QJ/X0TyXlyuWsKZM8E2subQ+9eB8lOg2CP201AeXlAeODPAPwPIHKjAyhnuxTk26ystZFraJ4tSwW+K0zqOkdHgHCLe8uYo0cKt+9mye9uue793xJAM3Q+N4EAA78wtB7hMfDDoh/VF6cGXV4xuY/GOowNQ0FjB+V7g8AKyV/ND5TrwDHxWDjx+Anp7PxJ1dvPB50yAvecD6BmDuG8A2Lk4grG3CpwK3vaULkM4uH55PsxegDkB5XoVEAeYStxczhFeC/g+gHpcPodcXLdjL5Q/vW2D/uJCJq2HcWwFEWkIhaDdb0O301oYMUhCRg6/FAKTnxcpniEtH0rTGC6VFscZWjG8RY4KVT6XcoA30XPKO6rSxUYD5bT1QovvbDTOMNOeiRY9vffyJwRQl8KRiEnCzZrUJ7Qjn/yW0o2wmwEXAloAXMB4DgScJsDKMxejDPblTXkIg8WDfL6HvFCo2kcNeJd0C+JYfn607dcoM8t/Gew/MhzA5+R1gJZXcOQJ2OJCprauRZQUjxfjLy1gYryewAgcRE7qYkQFWabklyR1BXJORZrJhvsHTH9fue10K5EOV3n86sQun+3PywcaKuMfygsUoZKXn4Sxgot70Uk457/AwtgG/M+3wop6wWMZYHsg3A6wDUdwvOSJ+ptpiOTIi4skXvcNdSKenxGxdRMI7pWx+2BFnzHKzmnj15HDPMEAPw03rVIhzxEfy8+pERdOvKaTC0HwTfArEPJ2AYAHk2jfW5TiUAoeH+OmmiQ+iAUMsx9RwfZSLO+05+ikLgfsYaY9Xy+HZxAaO90gNH447GjKB8lceiaq7WdYGiAAyItfG+CeknRY989ENFAKtG5vMAs0PJ9lbzm4AOnsHYxDBgt8uOmPy9hzMiGBf7lKwyMOm4BH8f1ZgdkVILL+zcCKP2PkexGAm2tPQUKl98oBwTI8l8dnsCl42Ct2aVRvIaMcLhOmEUr+aH2JNI5pKYkz0JGJ9isgMDn8K50TrR+Rw8fyWoXSeMFizwQa3wBs6LQ5VUFQnxszXabdW+CLZg/kmoo8WEUNl0SpAGV6tEu1H7Y5jhjJm/isHx4GtUc2RRPziOBog3zIj3AgcD4GBDZERCe5D0Beu8DPLw1wVZVtgrfnIUhS+OG5OE6X7oabF4fHQHM4gHgIqrjhxsFs2WjzGVc8ETJEGXgbI88y8QpUKoA5uuGZsazehmfZeGbwZeBz5awJNst/AWgpbOEtNHzg+aGzktwANSY/0Munn4MO5myvmEETxms/lXNasPx0UYoHQ/XBQoXzC3sPw34UQJurIT5UvY9GWma6TLu38Bfw5DeNijYg5ho4PJ/zEGymR7ud4V4AnBTgbgB5E5/1YytfvUiLhoHXhwDyIT/CH+BnBylKUyoCtM8AzgXsDuBXEtnx2Cdos1NNQDg/IXIt7D59tuD/H0C2bLTtFaFSRQkdh7Q6Afxy5kmwObpJlxmMeL4r7UY4rx85CnYLICuAgeJtCoVMRNnKOC9KLVpT2nnFDY6wRNvBwms/A+VGJwbFbuRAea0i9XcNoCNRiFGQcgevrSTt7+z0a3ooO18KFHScUr0LP0czofKQL2RaOjg0puQuzcTVp0APM3j3YLQkDxcV4apI6XKkY/Vy+egLKvbSvupPtQaqNVDZGsgXMkqf7s9ed0hjtFIKUv/kwmK0Ji8RR4VZeo/L8RP69e0UtkhV/GoNDOUa6BEyty5cEwrS/fwLo0/2xxkAjERyN0l0vCCiQijG9M0SH0MFnlT/qjVQrYG+qYEeITOipiFAEoukIWZvAw9A1ocoFC6tydkQkE+KkjAfZZsrDdHqNKkPH02VdbUGWAM9QkaL/5Wb2r2URAMKzc2OtCzaJv3ZlURyrij1pIjiipgE/tN6vrzfyZ2egUlWFESt9QjAVoB9AE0AHjf4Fmx+70mtKOWslqMfa8AnqYyQSR8hUF6f4zDJl8gyxW3mZpi/e3rb1yTRfoa0tDVKS/KwwMDPq8zqiAP/OGnpOEcSyaukteNR2XhKuzg1L2Ll6HIImB38M2BhaHlDFi/eUXiznhXV196lWo9BZz4K8AsAv7V0HuzvADLPoY8yAP7DAVMBvKaUy8svIakHATMB3MPzGGwujXIbeSvwDoK/LAPaXQH8MFz2A3GHlMUIRODD3bvXwyYv2icg2NcA36S7Bn4/IH/m+RLgNgNOAuwGWM03MQMB+Hy2t8FmejxHdTXcdQZKaCfo9wSw7MwjgbcBeu04Ds27vwgyjbtmxG5IkFu9YRU1d8nUaO7QU1EsO2JYZ5eIc6w4kVniqNbAwM+rRKQF+NeLIxdBoFAXtCfsDe0kgvv107JMb9PfJ8TRSNbs0rq1VoS3kt2M/P4MwO3n/OwHN6EtAE7ZHRu8ihrwnYpIbvm+Ffb+gFK3GtYjngdi7wbdc4DwQlxkdxHhCdzju+1wo0wQGWZbuI8DkBftk+AOYkw6CiY/IH/mmfo8bp/nwgZGyEKhOwv1sGWQRIHDPTOHw2Z6PBHOzXrXwl+WQbrc7cuXAcvOPBK+C2Y8cwRraJiMkFHa/zs2KeEbL3ypGsa/K/H6MaL1AF+hACVvQ3TXsgRl+FLnKNBQuH3+FSXCzpsLtxzc6MWO3WSF98qLtBNgQOES+GQy8LOGF0LPBQ827GxYENu+4qM3HcLeafxWkAwAx6ZDUFlmFVDx2omXUQ8UGPAWN0opvjAopEykI0Ab/KoUk1KEwg7vprzAzZBO6N3MeRz62ZMRMiL2d5ftbCyWTv2EHRjKH4/uJloG4oRzl/CC8YFT8rLhUdBkq4tXSPIWMl4TYG9Fn4kGuX4WsTc2+HAK5KXMfwN8rwBwhEO91F5wUwHOk8M8cAhvnuEQ/ai8kIH0lJc2L2laANIkoNh3rxjH51Fs/xenPl71CZY9BgKAo1Om0RMoMsv0BHHj+Y0DHkdXsHLmQvDndDcXMBQcjsx4ZSURNUFK/ulnKjICiNfv2a+CRuuHxU1tKvHY70oWr48i0VA4tOWVBukUtMjdcHBbOj/aNgUNhhsf7eE0h9lAK98gXaZDAWIy4VD+UKTJN+EZsG8HPAF4DHAzgHeg8IY3jrjsjnYzeA4pPYBZcLjvR/nGAdLb4uEvsBkH4PNgHJ8Zr3oAap7h1GlUXoi3Z6IVTEU7R0RWcEkvX0ImwtvI33lmwFBxO1K78iaiBIJGiv9p4d0ZxePDxPSPoGmTlDRKPLqPNI6hPiJMDiuJyw6b5ueI+1lELuBJ47wLmdBwOAznIbQ0Hn54vwes8gyEwWRQHgQwDS+A3xxp8fSzGV7gBg5HWVshgkIJVs7Yl2/nIoaAg9cwpLOJ8mkvSEfiB3GLATwDxnN5tj6JI3+vO2RA2WNA/wJ8nKbCypmb8GyoY8kFFHMAj0KK10+YKHZezLhB7XYkFdnYN4daePGyL1pghD4TNHqeiD5O7nl+nDTVUx8ROEt9hGhMffTzSjW7RdIxv4WzZhEc32A0zhFAomIZVs5wGrAzGn5gPQVwOaXbPcch4/gm+PPAXMY3tH5tvUag3KMeKJT/YiHb9WJF57yc6piHB/kip44lh+DlQB1zAea3VtxM5IUvCit4aHgdibgcHpbOre6q/GigUoJGy7sQLLeLuN+XhuimgBvlzok8kl+6TEFie48DfW+WiSq1qrNGFgu2rThFUGDDVYjhFvYBaKDFhJuF2uMFDef+tsCiHqcH6cvhsu8ism/k96wF1B9HT/YlXMdCiHBK6knTHXgl7NGArOHI96isZyjajmhlvG09i7BEUl32HN0TMXRgWtBozH31DaClbsIftMu7S64VV84VndpFPuiMQbBMHXQ7kVEgGAhA/GbMZlovL1gKRaPjXgweTM1giYT/mmaWUoRvzx6fSAKNnYpeMyyMm8/DxB/Ul2ObGa2g+78Wr5GWv6gXdc8rKh+2EFosf86LtsAXvr1MT93dshzSEHRwjskr9kpkXX8gUzbpzdu1BG9ExaNnQ0j8WBrqTwwE8djxabzG+l9KfMwzMgCb6pDroOZP+YiOlwKaKw/mcB6jsnyqID40UK5G8M4PE93rkmczvqQbnYQb9Kgf4NI6dREcKZWkWQEjh1llCrt8zHozWWyNZ1VMCWwrex/HM7jTJB6KbggZtUrJjGvFeSUWRkpiVSO9a4B7i4zRjNpWp/RFWVS4KXR4k1w26C40Ks8rDLMIJWxbV5AEL97fWoLEPwo87gTwcqJZsLlq5U+0YmFsbRXHXp62ovO9qLP3EWKPTri7OILwnIHgobJ+p1xAxlFMGGViQ/8ODIGDlSU/AcI54cDkboinigbWhSLkTzGUnAPhchqgBXV/BOKzhp/34CXVWX9Y296GYCqTw/Kq4qMG0PGpU7P1IaE/mYN2wKssOSoE17ThMjj3JaU9SMeBw1b2ngY6KuARNbQNdDJSWsgobQ7lh3ZpByD3aChcFTgaSfdckq3kCggYU6BwiwBveqeyEKhlGVu35rWxrizGKwDR52HLgI7PET639JtKee5evicsr258ewn6RKSRnd5yWkvdXDeqzEO7oQI46x/SNiSozhu2FZZG2R+uKkSphvjVwB0iDubyqO58zP/By+/07IBG1dsRo9lIwVb6RllPzkMPeDCVX5jkYcO90Lm9gHF7IG4KgApv7v79jlXU7+E5hV6pIw/QzYNtCw4elK1HuH0PdW5/FeKGvHHwRi196FHLqnLTi4E16lL9y6sBNFjeNrbcT5cAABAASURBVPgOAtcG2OZ/aHw8KGmHl+Pnm9ekC7wvxiSqnHtQcdoDueHZuUdh8/tgXsA4Hnuh4p3ntVYHLg1H+jxSsy2eVdmXk5MR6ClMTOHP0Y29B+0a4HHqTJIVAjhdomKqeGGUrC7DVvdZgSpO/mWNgXCpA/Dc0uWog2KjwXrgeM7xEb4+YCPAJoByNuj5jFCRq6oJUgMUMjyW8PcgyAFw7PNPXzFo3oeAsZXERvTQdDrItr9yaZiKAq9qAtYAhAIVe7yzxR5unyEp2cdicwDwf2WGwU+hwmshuAmS+1yCbIKzRy6rmjyr7rJrgH3kSjwT3sVTNpMsoVKKoyLuJM4GmfYKsZpkFohujmT8l+QcdygfjmM5+xu4Fd3c2cmPY+2PBnaFqlUPQ9XO4biZp1PRiHkSOhvG+jZ37lI/kI0rZleFTLGaEWHH3hXRPHHOj78VA24DOBh4VwC4dQNWzuyPZ8QPvuUCeuHgS8N+uXPjJKdxvWA7OEkhpZX9ic/CnGplH9YqxBnQkMGTOBrij5Ab8+oMKHxlKwiYP0v3n4qo60ULdy53h6StG0HLjkDPzvzpBioaeYFSt7eoZR6yJFJFRp/I06qAcYAYYCyAozTyDwq9OeLBspvplDsFbEP9Pw3giXN+/K0YPAWcewBnIFFubqSyFs6c4YpQr1dbwZ8vHXsnsL0RL5foUHc4opZx/b50Q1BCxdlQL2t/5Z/KPTOtvdGoOO0xwwSChqMZfgbVDH8InZg3/21rBD6vlPrQ8Bdz8r4UM24b09MLN5dx+SLiaIppZJddi7G0BUFvOqW94FDu9vpiOrFiZRDUOUcaBwCBOhlYaUM+5gg1HVjmT41FZyvureih63UkPu4D0Zrf9i1RCrWBzFrIIXwJnGrU51p/FbVg1tOf0ViLKwzbhDobY0ew8BT1y+DB4TystLkr/ev/w702JtbXIbCyKyRmeGA36KnwN0dl7HDzfRjYq5XUL/mQFI22l+XtKUxRwkpE4NnxkKj9/LxWCctJzhbGTjlMhgJNpmBK5vhmVtX+wBfnS44AJQqv0TRrwR4Sm3Gixiq+mXm/shlOhe1KRsB0w13KyeVVc8TDZ3tIKYIAcfZKCL9fzVvmSpF+YEXaO5Gt6JJee9Rglq8kYQUjOXoz2Y02PX3kXqHYsiEK9ANUVJYumBJzh2pp3C9vrK2v4Ga7krWBtyVXkTgs98K7DPF2p/XC4/DeRcRsgGl4MbbpD+umbsKkCTKq4rTKpOESPDecmWFB3fbHBrliF5S2UnjKYsTRphVU9ZaqgYyQ6foUWm3ds+3di0LJZjKrbXOvqGpYpgYwl7D3HAXqXBAkPK3NW+4zjHp+uSrS4/N3cVXExOI+nGlmQFA3pkoXAnc9QNawfbRkPSVsXlVhn9o/twS+ZxTS565XM33i5ZTn9PQT2FM06mX6KekVI5mMkJm8JYfAVPCVLpXj2ErN0vhfstjPRKjgNc8fHRmiCjDbKsC+DZ3NvIS8AMEMgLDidgT72sdm8Ai1/wL4XMa1BcM08F9ipuflBg4PhdojqiPB09QzeZHmwoBLXZB9YdYj4M2d0zm8fnKYz5NJmlNZ+qvgUwMZIUMkrQPc4aomQQFcnZOyvjxgdZW+FsMcfWyADjPTAzUvCDi/QMBNANtQkRxk+dqk4zd/bN0FL8C+GOl4vYVNWqwB6J8iwJ4WLUQHvwThQc3FHoh/Qfq+wg44XL6nstWeev7Eg2d/BNmKbHvFqz/yMKTT6BEy8dj9Itoe7ucXTokjqoYdQqp/RWug2YppQseZq3XXAVr/PreigLA1ABMBPKX9M4OGWwrM57AxcB4w4ks6IQw42tjTA+kshPFjZVeBHzeWbQp7dcBaAN6mzz0g1HlcCjzTFONn4uS5kYd/IeAUgG0o7ChsfoQ0JwCYPoHuRvjvAMHTAPtE+VngyZ3PiOp3w31OZqK5Z2gGVt3Fa8DJi3ILNojlRac9jjpJbkvyDZv2Vn/yawCdgULjqvxQ2UEkAiF+CDv5S+hM7MxcHmWnMpeI54Oen+Owjx5QKHiNDqxkMl7w4GVVXLWyrzjgcvLJwKLQ4rYF5oHA/FyNcH6lAFbO8GNq24Gf/eWCHEIxB2hYB9eLUB9NyGFy2sRRM4Up0ybQzRsCeQtfDrHbcT142YKvOyqIxbRLbwPz4WIr3vl8fEiq0WYN5AuZ5XIVVpr4VKTkX53Y8/6S6F+2SHSKU8SVq1GXdtF5CTU7MiE9HWBlE9AN7oJCheFcKfqHSNc5ANAzNt1Vz0rp1PkICGSQB546Zofg6WJJ5wWa6TxiLaMRvhIgF5xJLe3lNI+fUaEwSgeE/UEeuOGQejzoaci5B1zhv4xGCMGLNRXNp3Tz8IovGoa6XDnNXZBsBqs3e1u4+pfhkvk9CC+JnwLy+04mLsRvCnlC6VEPAkhJyncqG4L5oELNr6ip0f9hUm4r3DwyrPaV1o4DPSL8gr408SqiTkbb+S4K/DCaUhcAXvi6Tbd/uSupB6FZ/H6NUodElVraHQ1BU4uRyzKMBlJzRVKPAu9pwAFf6C/CKIJ5BefekpKDkPgDECbLAXB2p0Khw4zQBsD5MawWdM1d0bknA6DL7sYt01IqcqVI5zgARjWdUNyy+7vIBkqDnEAgwM1uhgSQODwcPV25RJaMRfooP8JDmk7panNlGaZdXY+J7pwjrnosJAsTHQJfHkQAd2dTYHOk+n346wC9MBp5Qt7EfQwC5ulOWWIv/feC9+AizRcyzJtafh4sPm5YJYzWCfnd6/aOzBIEgzhqVvJQCM2fVzqHqkY9gI6yzzKRGDrw3qhUHoI8FelMhX8Phteqmv3qlLoPYQVGqZXxJh+2k1I1e9eqml1r1bDt58k8e/heQGcHqBp1L+C7skxiKSX7Ie1zIEguFgfTYy1cqj5VlOyOtdoYhF1TrVLooDaX8v1K1bUDMKpZFEO6O6ZEHw/h0iyieTnUlaiXZsCRyMP28nPhFzZPG6lG2mexAmdghKp9olaNhKAcsZdy6nZWkchFgYktRDw/3vmzH+zdAXsDdgTgmSieP7Kwg3uVqr0IdbIz7L1q1LBdR6hR5oJBcEZDALNQyPCYgbh4i/rkHjUkK630iA/W4I+euWgjiSguuZ4niQ5eg1jxPI9U6u1apR5FB+bnYH+NRno7/E8iHG/2cMltq7bFwCccTRZbjVTvIA8PIu2LAecgH8erWnWeiijm6amvKOW7eTDLqxxbqQnLa1Xts8PUsOuHq9oLhqmaE4cpdVqtUhfUKHUL8vOCalaQgeVwr9IM1hooFDLM6T0vno9h68d0+sDW0poMskHLh80ARc9aOFpqIj1vbSVn9JWgGaASVpPt4xqosvevAW8hc+fElCjXaweqB0cVl5bkbzwiBnfQbck6idTOEVH5K2VVQSPVv2oNVLIGvIUMU2iI3Qcl8L10+oKjTpJE+3W+eIMFYcYrK0md8NTyBM8sVQWNZ7VUA6s1UE4NFBcy5Pbv9xqhnLNvXGNMISjnx5JIct9HYdxgCpne9jWpHY0VA7VlyWxR0LR0XFvd4VyylqqR1RrwrQFHbkuuWhTr1B2XiMZydVEEK0KpiRA0/wDYR/QtxAHytrTtJbXOKyJqYwny5whWRBxeIhUEu89xqglUa2Ao1oAjw9X9Mqut2FUDIvH6ZzGaOTVw4ZT6uij1GhTCxwam6Q/ERPJ8cSKPIG/FhaqdD+0eKk1juBvVjqn6qzVQrYGANYDpkh4rEecu4CuAt2mI/lpcCaNziYioGyBoHoZSOL2LVQbqL9GxA/LxLITLBSGzcITEY8VulQ/JqoperYEvbw1AyMjLImq4tHZ4bgiT7F9j/QkiOqTORX1bHPWSUCl8WzLQ3SrZ5Hptz3gzKonkLaJkrogyzweJ/597gjTUV49O+FdUFaNaA741QCFDIOIBkmjn7k+6xfOnIXoYVpzCv92pFK5TCyWRvBFTs809eVcqcOaiHZHOdKmtWyBK/Sg0W63PlIZYmFFb6CSqBNUa+DLVAASM6pkmKedcjGhKd8x49FAIGq+7T/zqrQad/hiJRF5FGvdLor1JZixay48oUHxi4WaS6DgVfOdITc0cpDMZdDWAcEbrYyUe7f2u3+bXhkkiOT5c4t3YN704Uqa3bSzT27eQmQu3Tk83b3qxtjs2uDWrbXNpefUrBQSH/D6S5n31Qq9LsgrQcwHcuNjaEUcdn4Oy2afEc2iBHNe9trK0vDVZZv3rbJn11k6BaEohzejYRJqfCP+8m5sduXXRBsL207JgK2lt27bXbbL1zXUl0X4kntuZWJkMOYLOK6SSln9NksRbZ0si2bv6zmPb/x4ImYJEb5HW9u8VhJoB8eixEDTnmEEh3QeIcmZCILRLouMRPJBmaenYT9hYuIelGDN2tpYFMdDsIIn2E2HfDHhdVO1rouRXINsREN5oeU9SegcImJvCE3tQjB91q6jIPGlp394jtnTQyqt/T9VG5jtYBVNO7QtKqZfUqDWWSyJ5VmlCKzYSSYgzqvAOlgO3SyjwllE1PS8Xi7TA2/rWJKkZ/okoh7u7T8cU+EEIm7eFRzIKkH0CEskfyGqjPwMP1JE+Q5zaZ2TWO3PkyrdH+FB6Rkemv71vjeO8UTPma+Gvgxh70Coy0nlVnMhrEql5UZR6QYY5/4GweUCayxBarclpInXvgM91gJ+qSORZaZ2Pss0NVzZus0i8+644znQU+gzwehDt/DXPlwYQBrvxEjLIs/NHSSz6FhzFTTx6saRS3xXRnxRH8olRspIo2QsNbpo48ieplTekZnQ7OtSrgOekNfkw7IcAc+F+WUat0S7OsDbQzEWDvxr2UYBNfVIpHa3lcZFlW0hT9DmpxB9HIqIOQr4EDfeU0CwdSY/uXC3f0p2dW+hO2Vq7+hIl6mKZ1cFrE4KxdN2rhLuZKZSl5w98JmotD8jUaO7Ed09soatm+vydRakZeKnMhCBeDboqHordVJReWWprXhKO2grJvENakluJo+4VlZohH326qjRusJq4S7aXSGrHyFr6v6F4dacwXEdOjLiOaEcau4O8La/QlMYI0cVqo75K3NSWstzdHGVsQnn3l3EbPuNFUjSsNXmSiGoW1z1f5n8xSuL1q+uu1B5KpXaUdUeFa1vDax4XZ/li+eij0RLfcDXpWjpelGwmzui/yxD8KyJkUBJV8xg6d+lhWtOYB2T58s3QAP8MisoYpdYSpTYHfENEfRv2dwA7wL2lKFlfKvmn3YvQGPZMf3uqUnxHrwFBoP8tLnQ7IoeV80bUCplprH9CDh/7ukypfwkC8Gwtcpdy5ArhaA7RvqYxdksaR9WelLb5M6stc2NeZ2fgUZGuidwtWv4lDRtOlsYNPyYbOax+nrz73rpwryzjVv4Z7GDGkTvA60M5LDpFjp/weZqoacwL4nZu7KrUPInVocOnQwP9jLzpDV57sa/ruidopdaW2W8eEogwi9SVQrXC46puW+exAAAHlElEQVS/Sxx1PXmj16RxTIu47p5oa9/AdHV3xPqb9DNRv0n3g8bYL6R5wvI00aSxT+qU+w0lkS1k9rwDJOifo8dAEP8xV0eTxs8XcQ8BfyzSBGUyePCKCxnmUakHMXTcn86iMGXcOxKP7o8HcwwaUKYRFkUeJBFaXpSurp2wRB28gwTNutanozHcjTfQZaJdwRtxalDSNJ5LIrhuXchb7ODImSs1hc/oNSbkQvwdjwGF10vAgnEiZ2nRS9PCC15fA52O6zhrie66rAA3vVFTvyJKTymI8wq4ElMGpTYG/tW5aHZOhjeOWagbo9vL5I3+m4sL4Fi20shzl9R2Lek8/GvXueK0idSeF4DMQBkFtyNot/nCLb7R4xwaSY0zEQj+ZqXVt0kjKXda2jZ/Gic8r/UwjBqHHWEGl3SnNIRx5BRMSe/HlPuEtM6oIXYX+tlBJekGaSRq2CdnOnKjD0YmujF2s3QuGYsHdk0mYBD+av0p8neaxOu3k0kbza14DhPtW4hSo2Wpvi7NW8vrIs7ZaXdvf1LuR2kWuqtQmZuO8PhJdU1DfuqEykhGK9lLRAV/PnrEOlrQRLRaIN5/b4pWq3tHWaFrrrpqOiSlO9I2f0atca+ss87HGDF/gunwfOgdMGJlRDBIReQYrVLd5XF/IzqyudzyJiVHMAbE0igfbRu0uOBnC3obK+N3NG88hLvT/Boo/FkTeV+089Wsz9fmKm5KnyVaby+Oc41Q55joaJOZ7Vv60g5ChCI1bOZUY94qygwp6p6yyYfowCdJp2yKCqLSKlUUtz8jtHyB5K6QzqUx5O9KuPvIOE1pxnXyV3SYD1Brm8EfFa6mwNErE5FMQ9bq7cB8mjaak8bVwydK9l7mrq4r0mFBfpalMmkpvYU3umL5go0+Fi/+QDS4OCqK324DweDqo9BWThAe9dDuWAn6l0iOB2oN4Fi88T8UcabBLVJXW3rRIo0U4EeJg1EXRkfi/5dKZa7oTNUYZTPItEDABHxuHNlx5a8xeqnEo2vL8iVrgBNGMNCBRdRzwngEDCXj+GZWCW+r90XLQ5iMOXs8ejg6NUY2+jIR/e+8+P7yaP2WiHuedHXFoLA8QygE+zJtpY9GR/qTuFzpci9NTyGZ3qojgyuAHZV5Jj8a+z5Jc6Cc5rQbU4u0HfRH61uBOkWGq2vRmReGmpIcMf6zNI3XaCzRvjb4ThDt3gDb3xyTvmwrKVodnUOOxx6RxthMkc8fyISpTzJ2gF+lLhetP4MgPxP2pQBMlfQ/xYlk6ikAixyKdj7Kueng9graugt5o8MH2loyupJI5OICzJYkdYq1mHIGmxGss/ZmsmbtUkyTNkzzYpttqL9XtJBPnay51nrp8CH04/jmVeMx+iIVQZg8PglpfKa8915MXN2AirobmJ8D+tBoDE2lBQkcJPe+MEYaYheG6lggLMu0dvxIRK0CJWZcGqO/gb7ncnQg3pf8D3Gcn0vQP7e7vlvaDxEqame1fxvTiQTId0RHCn+vcqd7gSi1lSg5GPT2B9vA1se4XT8A7VcwnfmrtLSNFW4xSHccBy8OdOp47HIfDj3RrnsYeK2LUd7M9BSuudlB2fbBUjt4AU2rjMIUzpImc6gXilR1qTREb0Qbuwx1foOkFKemG8mshZuWpM9G1iiVdjqyB8q2VxoSWMHj9gotd6WVwWkEn5/mZherUoeJqF1QtpvTe29ualsFgmKSOOohtPtHhXoeCfDX+fm8NJajXkB+MiM77l535HY8v6XysX5bhtgfhIzeoGSelcpI1JJIPpFUEjZGZ0u8/oeypDOWFjiuvhGV/7oPZYDotFDBcqPm22xf+eiLGNJpEkr/Oyf233RN68mi9cvSNPbTvEynUtPSfm74Sjt8fhz1T/DBG9qZLZHIo2ikDwh1KS6ERDz6Bx/qwugpY8jvb+D5KYTenYUIPiFNY98Q7X4bz2pLcSILpGb0u8gTOo7+myxfurUPdX50Y+x58MJ0Rh8q3E8ybso7QLgPvH8lWt8rjrs6/P5mmD4YSJ/LZ6lrYfeYRbfPBq+PxamZ1BNYwpWKQKhp6Ij0FJTtkTSIvhDt82q0oUNKUBZGNUXvEHGPxrM6SkbU/FNGRd4Rx5kBxDvBa2/YwczkLb+QLne8aNUprO9Ex9tSU7dIRK0sXant5KSxy6Tf/3qXoCOiMCTU9+Ahzy4E4cjjChHRgMoYTgMocBqjx6HyJ2BKFZNUai8kcSrSvwwptcB+GPAU4OU0iH4a8X9BBu6E/yrhFMh1qfnfuluo7CIN0bMkHn1IskujQO5X43Y1yYLpmVUGM+EmLPMv6VwLU6hgb6BPP3hAZDnqZPH6kurcQJZ2rYeyrSWN9feYbEO5P/twF/nMzeh0QhF2I3NaE4+uIq67m7jqMNGdE1DX3yxr+hmP3Y96qhM3tTee5dHSuTwKXucADpKPFwcTossVpqSffk2OGZM/vWrGiGKZjoladk13zktbU6OfyKfuVrJMUDdL15Ply9ZHPkZIY5TfpipN6xXbEPutzP98eHd7/iHqq14a6tlOvbCLh02KzZd4/Xqg302Ue7xIajfw2Ui4xF6catDG/D8AAAD//9lQcwwAAAAGSURBVAMAypTCdYwrRV8AAAAASUVORK5CYII=" alt="Peixoto & Cury" style="height:38px;width:auto;object-fit:contain;">
+<div class="hdr">
+  <div class="hdr-top">
     <div>
-      <div class="hdr-brand">Peixoto & Cury Advogados</div>
-      <div class="hdr-sub">Dashboard Gerencial — Divisão Trabalhista</div>
+      <div class="logo">LAW<span>gico</span> <span style="font-size:13px;font-weight:400;color:rgba(255,255,255,.5)">· Gerencial Trabalhista</span></div>
+      <div style="font-size:11px;color:rgba(255,255,255,.45);margin-top:4px;">Peixoto &amp; Cury Advogados · Controladoria</div>
+    </div>
+    <div class="hdr-meta">
+      Atualizado em <strong>01/06/2026</strong>
+      <span class="badge">Trabalhista</span>
+      <span class="badge">75.577 processos</span>
     </div>
   </div>
-  <div style="display:flex;align-items:center;gap:16px;">
-    <div class="hdr-date" id="hdr-date"></div>
-    <div class="hdr-badge">✓ Andamento — Mai/2026</div>
-  </div>
-</header>
-
-<div class="tabs">
-  <button class="tab-btn active" onclick="sw(0,this)">📋 Em Andamento</button>
-  <button class="tab-btn" onclick="sw(1,this)">🏢 Por Grupo</button>
-  <button class="tab-btn" onclick="sw(2,this)">👤 Profissionais</button>
-  <button class="tab-btn" onclick="sw(3,this)">📈 Fluxo Anual</button>
-  <button class="tab-btn" onclick="sw(4,this)">📊 Histórico</button>
-  <button class="tab-btn" onclick="sw(5,this)">👥 Sócios</button>
-</div>
-
-<main class="main">
-
-<!-- ══ TAB 0 — EM ANDAMENTO ══════════════════════════════════════ -->
-<div class="tab-content active">
-  <div class="sec">Carteira ativa — visão geral</div>
-  <div class="kpi-row">
-    <div class="kcard nav"><div class="klbl">Total em Andamento</div><div class="kval">8.217</div><div class="ksub">processos ativos — base mar/2026</div></div>
-    <div class="kcard acc"><div class="klbl">Reclamações Trabalhistas</div><div class="kval">7.050</div><div class="ksub">85,7% dos processos</div></div>
-    <div class="kcard grn"><div class="klbl">Judicial</div><div class="kval">7.876</div><div class="ksub">95,7% · Administrativo: 350</div></div>
-    <div class="kcard gold"><div class="klbl">Principal Cliente</div><div class="kval sm">Bridgestone</div><div class="ksub">1.452 processos — Grupo B1</div></div>
-    <div class="kcard org"><div class="klbl">Fase Instrução</div><div class="kval">2.301</div><div class="ksub">maior fase processual</div></div>
-    <div class="kcard gy"><div class="klbl">Recursal Total</div><div class="kval">2.484</div><div class="ksub">Recursal + TST + TRT + 2ª/3ª inst.</div></div>
-  </div>
-
-  <div class="g-wide">
-    <div class="cc">
-      <div class="ct">Top 10 Clientes <span class="ct-sub">processos em andamento</span></div>
-      <div class="cw h280"><canvas id="ch-cli-at"></canvas></div>
-    </div>
-    <div class="cc">
-      <div class="ct">Por Fase <span class="ct-sub">andamento</span></div>
-      <div class="cw h280"><canvas id="ch-fase-at"></canvas></div>
-    </div>
-  </div>
-  <div class="g2">
-    <div class="cc">
-      <div class="ct">Volume por Grupo <span class="ct-sub">em andamento · mai/2026</span></div>
-      <div class="cw h220"><canvas id="ch-grupo-home"></canvas></div>
-    </div>
-    <div class="cc">
-      <div class="ct">Por Estado (UF) <span class="ct-sub">processos em andamento</span></div>
-      <div class="cw h220"><canvas id="ch-estado-at"></canvas></div>
-    </div>
-  </div>
-
-  <div class="sec">Grupos e profissionais — processos por profissional</div>
-  <div class="tc">
-    <div class="th">GRUPOS — PROFISSIONAIS E PROCESSOS <span class="th-badge">distribuição completa</span></div>
-    <div class="ts"><table>
-      <thead>
-        <tr>
-          <th style="width: 12%;">GRUPO</th>
-          <th style="text-align: left;">PROFISSIONAL</th>
-          <th style="text-align: right; width: 15%;">PROCESSOS</th>
-        </tr>
-      </thead>
-      <tbody id="tb-g-prof"></tbody>
-    </table></div>
-  </div>
-
-  <div class="tc">
-    <div class="th">TOP 10 CLIENTES EM ANDAMENTO <span class="th-badge">8.217 processos</span></div>
-    <div class="ts"><table>
-      <thead><tr><th>#</th><th>Cliente</th><th class="tn">Processos</th><th class="tn">% carteira</th><th>Fase principal</th></tr></thead>
-      <tbody id="tb-cli-at"></tbody>
-    </table></div>
+  <div class="tabs">
+    <button class="tab-btn active" onclick="showTab('ativos',this)">⚡ Ativos (8.154)</button>
+    <button class="tab-btn" onclick="showTab('encerrados',this)">📁 Encerrados (67.423)</button>
   </div>
 </div>
 
-<!-- ══ TAB 1 — POR GRUPO ══════════════════════════════════════════ -->
-<div class="tab-content">
-  <div class="sec">Distribuição por grupo de trabalho — processos em andamento</div>
+<!-- ═══════════════════ ABA ATIVOS ═══════════════════ -->
+<div id="tab-ativos" class="tab-pane active">
 
-  <div class="ggroups" id="grupo-cards"></div>
-
-  <div class="g2">
-    <div class="cc">
-      <div class="ct">Volume por Grupo <span class="ct-sub">processos ativos</span></div>
-      <div class="cw h260"><canvas id="ch-g-vol"></canvas></div>
+  <div class="kpi-grid" style="margin-top:24px">
+    <div class="kpi-card acc">
+      <div class="kpi-lbl">Total Ativos</div>
+      <div class="kpi-val">8.154</div>
+      <div class="kpi-sub">processos trabalhistas</div>
     </div>
-    <div class="cc">
-      <div class="ct">Fase por Grupo <span class="ct-sub">Instrução · Recursal · Execução</span></div>
-      <div class="cw h260"><canvas id="ch-g-fase"></canvas></div>
+    <div class="kpi-card">
+      <div class="kpi-lbl">Instrução</div>
+      <div class="kpi-val">2.531</div>
+      <div class="kpi-sub">31.0% da carteira</div>
+    </div>
+    <div class="kpi-card grn">
+      <div class="kpi-lbl">Recursal</div>
+      <div class="kpi-val">2.600</div>
+      <div class="kpi-sub">31.9% da carteira</div>
+    </div>
+    <div class="kpi-card gold">
+      <div class="kpi-lbl">Principal Grupo</div>
+      <div class="kpi-val sm">Grupo E2</div>
+      <div class="kpi-sub">2.029 processos</div>
+    </div>
+    <div class="kpi-card org">
+      <div class="kpi-lbl">Principal Cliente</div>
+      <div class="kpi-val sm">BRIDGESTONE</div>
+      <div class="kpi-sub">1.432 proc</div>
+    </div>
+    <div class="kpi-card gy">
+      <div class="kpi-lbl">Grupos Ativos</div>
+      <div class="kpi-val">11</div>
+      <div class="kpi-sub">equipes com processos</div>
     </div>
   </div>
 
-  <div class="tc">
-    <div class="th">GRUPOS — PROFISSIONAIS E VOLUMES <span class="th-badge">detalhamento completo</span></div>
-    <div class="ts"><table>
-      <thead><tr><th>Grupo</th><th class="tn">Total</th><th class="tn">Instrução</th><th class="tn">Recursal</th><th class="tn">Execução</th><th class="tn">Outros</th><th>Profissionais</th></tr></thead>
-      <tbody id="tb-g-fase"></tbody>
-    </table></div>
+  <div class="grid3">
+    <div class="pnl">
+      <div class="pnl-title">📋 Por Fase</div>
+      <div class="br"><div class="br-lbl">Instrução</div>
+<div class="br-wrap"><div class="br-bar" style="width:100%;background:#1ae3ff"></div></div>
+<div class="br-val">2.531</div></div><div class="br"><div class="br-lbl">Recursal</div>
+<div class="br-wrap"><div class="br-bar" style="width:77%;background:#1ae3ff"></div></div>
+<div class="br-val">1.952</div></div><div class="br"><div class="br-lbl">Execução</div>
+<div class="br-wrap"><div class="br-bar" style="width:39%;background:#1ae3ff"></div></div>
+<div class="br-val">989</div></div><div class="br"><div class="br-lbl">1ª Instância</div>
+<div class="br-wrap"><div class="br-bar" style="width:17%;background:#1ae3ff"></div></div>
+<div class="br-val">435</div></div><div class="br"><div class="br-lbl">2ª Instância</div>
+<div class="br-wrap"><div class="br-bar" style="width:16%;background:#1ae3ff"></div></div>
+<div class="br-val">406</div></div><div class="br"><div class="br-lbl">Recursal TST</div>
+<div class="br-wrap"><div class="br-bar" style="width:15%;background:#1ae3ff"></div></div>
+<div class="br-val">369</div></div><div class="br"><div class="br-lbl">Administrativa</div>
+<div class="br-wrap"><div class="br-bar" style="width:11%;background:#1ae3ff"></div></div>
+<div class="br-val">269</div></div><div class="br"><div class="br-lbl">Liquidação</div>
+<div class="br-wrap"><div class="br-bar" style="width:9%;background:#1ae3ff"></div></div>
+<div class="br-val">232</div></div><div class="br"><div class="br-lbl">Inicial</div>
+<div class="br-wrap"><div class="br-bar" style="width:9%;background:#1ae3ff"></div></div>
+<div class="br-val">216</div></div><div class="br"><div class="br-lbl">3ª Instância</div>
+<div class="br-wrap"><div class="br-bar" style="width:8%;background:#1ae3ff"></div></div>
+<div class="br-val">214</div></div>
+    </div>
+    <div class="pnl">
+      <div class="pnl-title">👥 Por Grupo</div>
+      <div class="br"><div class="br-lbl">Grupo E2</div>
+<div class="br-wrap"><div class="br-bar" style="width:100%;background:#006080"></div></div>
+<div class="br-val">2.029</div></div><div class="br"><div class="br-lbl">Grupo E1</div>
+<div class="br-wrap"><div class="br-bar" style="width:88%;background:#006080"></div></div>
+<div class="br-val">1.785</div></div><div class="br"><div class="br-lbl">Grupo B1</div>
+<div class="br-wrap"><div class="br-bar" style="width:70%;background:#006080"></div></div>
+<div class="br-val">1.430</div></div><div class="br"><div class="br-lbl">Grupo D1</div>
+<div class="br-wrap"><div class="br-bar" style="width:40%;background:#006080"></div></div>
+<div class="br-val">802</div></div><div class="br"><div class="br-lbl">Grupo B2</div>
+<div class="br-wrap"><div class="br-bar" style="width:36%;background:#006080"></div></div>
+<div class="br-val">740</div></div><div class="br"><div class="br-lbl">Grupo C</div>
+<div class="br-wrap"><div class="br-bar" style="width:29%;background:#006080"></div></div>
+<div class="br-val">597</div></div><div class="br"><div class="br-lbl">Grupo B3</div>
+<div class="br-wrap"><div class="br-bar" style="width:26%;background:#006080"></div></div>
+<div class="br-val">533</div></div><div class="br"><div class="br-lbl">Grupo A3</div>
+<div class="br-wrap"><div class="br-bar" style="width:8%;background:#006080"></div></div>
+<div class="br-val">158</div></div><div class="br"><div class="br-lbl">Grupo A2</div>
+<div class="br-wrap"><div class="br-bar" style="width:2%;background:#006080"></div></div>
+<div class="br-val">33</div></div><div class="br"><div class="br-lbl">Grupo A1</div>
+<div class="br-wrap"><div class="br-bar" style="width:1%;background:#006080"></div></div>
+<div class="br-val">26</div></div>
+    </div>
+    <div class="pnl">
+      <div class="pnl-title">👤 Top Profissionais</div>
+      <div class="br"><div class="br-lbl">Jessica Cerqueira Silva</div>
+<div class="br-wrap"><div class="br-bar" style="width:100%;background:#00897b"></div></div>
+<div class="br-val">452</div></div><div class="br"><div class="br-lbl">Paloma da Silva Santos</div>
+<div class="br-wrap"><div class="br-bar" style="width:96%;background:#00897b"></div></div>
+<div class="br-val">435</div></div><div class="br"><div class="br-lbl">Júlia Priego Lopes da Silva</div>
+<div class="br-wrap"><div class="br-bar" style="width:89%;background:#00897b"></div></div>
+<div class="br-val">404</div></div><div class="br"><div class="br-lbl">Rafael Yepez do Lago</div>
+<div class="br-wrap"><div class="br-bar" style="width:82%;background:#00897b"></div></div>
+<div class="br-val">371</div></div><div class="br"><div class="br-lbl">Camila Alves Magalhães de Paula</div>
+<div class="br-wrap"><div class="br-bar" style="width:79%;background:#00897b"></div></div>
+<div class="br-val">356</div></div><div class="br"><div class="br-lbl">Bianca Bolanhi Camacho</div>
+<div class="br-wrap"><div class="br-bar" style="width:77%;background:#00897b"></div></div>
+<div class="br-val">349</div></div><div class="br"><div class="br-lbl">Richard Ruan Leo da Silva</div>
+<div class="br-wrap"><div class="br-bar" style="width:73%;background:#00897b"></div></div>
+<div class="br-val">328</div></div><div class="br"><div class="br-lbl">Jenifer de Jesus Silva</div>
+<div class="br-wrap"><div class="br-bar" style="width:71%;background:#00897b"></div></div>
+<div class="br-val">321</div></div>
+    </div>
   </div>
+
+  <div class="grid2">
+    <div class="pnl">
+      <div class="pnl-title">🏢 Top Clientes</div>
+      <div class="br"><div class="br-lbl">BRIDGESTONE</div>
+<div class="br-wrap"><div class="br-bar" style="width:100%;background:#c9a84c"></div></div>
+<div class="br-val">1.432</div></div><div class="br"><div class="br-lbl">BP BIOENERGIA</div>
+<div class="br-wrap"><div class="br-bar" style="width:53%;background:#c9a84c"></div></div>
+<div class="br-val">763</div></div><div class="br"><div class="br-lbl">EMBRAER</div>
+<div class="br-wrap"><div class="br-bar" style="width:50%;background:#c9a84c"></div></div>
+<div class="br-val">717</div></div><div class="br"><div class="br-lbl">SYNGENTA PROTEÇÃO DE</div>
+<div class="br-wrap"><div class="br-bar" style="width:48%;background:#c9a84c"></div></div>
+<div class="br-val">685</div></div><div class="br"><div class="br-lbl">MAHLE METAL - MOJI</div>
+<div class="br-wrap"><div class="br-bar" style="width:45%;background:#c9a84c"></div></div>
+<div class="br-val">643</div></div><div class="br"><div class="br-lbl">HERINGER</div>
+<div class="br-wrap"><div class="br-bar" style="width:24%;background:#c9a84c"></div></div>
+<div class="br-val">349</div></div><div class="br"><div class="br-lbl">TELEFONICA BRASIL</div>
+<div class="br-wrap"><div class="br-bar" style="width:24%;background:#c9a84c"></div></div>
+<div class="br-val">344</div></div><div class="br"><div class="br-lbl">LOJAS AMERICANAS</div>
+<div class="br-wrap"><div class="br-bar" style="width:24%;background:#c9a84c"></div></div>
+<div class="br-val">338</div></div>
+    </div>
+    <div class="pnl">
+      <div class="pnl-title">📅 Entradas por Ano (ativos)</div>
+      <div class="br"><div class="br-lbl">1969</div>
+<div class="br-wrap"><div class="br-bar" style="width:0%;background:#1ae3ff"></div></div>
+<div class="br-val">1</div></div><div class="br"><div class="br-lbl">2005</div>
+<div class="br-wrap"><div class="br-bar" style="width:0%;background:#1ae3ff"></div></div>
+<div class="br-val">3</div></div><div class="br"><div class="br-lbl">2006</div>
+<div class="br-wrap"><div class="br-bar" style="width:0%;background:#1ae3ff"></div></div>
+<div class="br-val">2</div></div><div class="br"><div class="br-lbl">2007</div>
+<div class="br-wrap"><div class="br-bar" style="width:0%;background:#1ae3ff"></div></div>
+<div class="br-val">3</div></div><div class="br"><div class="br-lbl">2008</div>
+<div class="br-wrap"><div class="br-bar" style="width:0%;background:#1ae3ff"></div></div>
+<div class="br-val">5</div></div><div class="br"><div class="br-lbl">2009</div>
+<div class="br-wrap"><div class="br-bar" style="width:0%;background:#1ae3ff"></div></div>
+<div class="br-val">7</div></div><div class="br"><div class="br-lbl">2010</div>
+<div class="br-wrap"><div class="br-bar" style="width:0%;background:#1ae3ff"></div></div>
+<div class="br-val">3</div></div><div class="br"><div class="br-lbl">2011</div>
+<div class="br-wrap"><div class="br-bar" style="width:0%;background:#1ae3ff"></div></div>
+<div class="br-val">3</div></div><div class="br"><div class="br-lbl">2012</div>
+<div class="br-wrap"><div class="br-bar" style="width:0%;background:#1ae3ff"></div></div>
+<div class="br-val">5</div></div><div class="br"><div class="br-lbl">2013</div>
+<div class="br-wrap"><div class="br-bar" style="width:1%;background:#1ae3ff"></div></div>
+<div class="br-val">13</div></div><div class="br"><div class="br-lbl">2014</div>
+<div class="br-wrap"><div class="br-bar" style="width:1%;background:#1ae3ff"></div></div>
+<div class="br-val">16</div></div><div class="br"><div class="br-lbl">2015</div>
+<div class="br-wrap"><div class="br-bar" style="width:1%;background:#1ae3ff"></div></div>
+<div class="br-val">15</div></div><div class="br"><div class="br-lbl">2016</div>
+<div class="br-wrap"><div class="br-bar" style="width:2%;background:#1ae3ff"></div></div>
+<div class="br-val">61</div></div><div class="br"><div class="br-lbl">2017</div>
+<div class="br-wrap"><div class="br-bar" style="width:5%;background:#1ae3ff"></div></div>
+<div class="br-val">118</div></div><div class="br"><div class="br-lbl">2018</div>
+<div class="br-wrap"><div class="br-bar" style="width:6%;background:#1ae3ff"></div></div>
+<div class="br-val">164</div></div><div class="br"><div class="br-lbl">2019</div>
+<div class="br-wrap"><div class="br-bar" style="width:15%;background:#1ae3ff"></div></div>
+<div class="br-val">380</div></div><div class="br"><div class="br-lbl">2020</div>
+<div class="br-wrap"><div class="br-bar" style="width:10%;background:#1ae3ff"></div></div>
+<div class="br-val">248</div></div><div class="br"><div class="br-lbl">2021</div>
+<div class="br-wrap"><div class="br-bar" style="width:10%;background:#1ae3ff"></div></div>
+<div class="br-val">249</div></div><div class="br"><div class="br-lbl">2022</div>
+<div class="br-wrap"><div class="br-bar" style="width:26%;background:#1ae3ff"></div></div>
+<div class="br-val">665</div></div><div class="br"><div class="br-lbl">2023</div>
+<div class="br-wrap"><div class="br-bar" style="width:44%;background:#1ae3ff"></div></div>
+<div class="br-val">1.098</div></div><div class="br"><div class="br-lbl">2024</div>
+<div class="br-wrap"><div class="br-bar" style="width:51%;background:#1ae3ff"></div></div>
+<div class="br-val">1.281</div></div><div class="br"><div class="br-lbl">2025</div>
+<div class="br-wrap"><div class="br-bar" style="width:100%;background:#1ae3ff"></div></div>
+<div class="br-val">2.524</div></div><div class="br"><div class="br-lbl">2026</div>
+<div class="br-wrap"><div class="br-bar" style="width:51%;background:#1ae3ff"></div></div>
+<div class="br-val">1.290</div></div>
+    </div>
+  </div>
+
 </div>
 
-<!-- ══ TAB 2 — PROFISSIONAIS ══════════════════════════════════════ -->
-<div class="tab-content">
-  <div class="sec">Carga individual — 8.217 processos em andamento</div>
-  <div class="kpi-row">
-    <div class="kcard acc"><div class="klbl">Maior Carteira</div><div class="kval sm">Jessica C. Silva</div><div class="ksub">492 proc · Grupo D1</div></div>
-    <div class="kcard grn"><div class="klbl">2ª Maior</div><div class="kval sm">Paloma Santos</div><div class="ksub">421 proc · Grupo E1</div></div>
-    <div class="kcard gold"><div class="klbl">Profissionais Ativos</div><div class="kval">40+</div><div class="ksub">com processos alocados</div></div>
-    <div class="kcard gy"><div class="klbl">Média por Prof.</div><div class="kval">137</div><div class="ksub">processos / profissional</div></div>
+<!-- ═══════════════════ ABA ENCERRADOS ═══════════════════ -->
+<div id="tab-encerrados" class="tab-pane">
+
+  <div class="kpi-grid" style="margin-top:24px">
+    <div class="kpi-card acc">
+      <div class="kpi-lbl">Total Encerrados</div>
+      <div class="kpi-val">67.423</div>
+      <div class="kpi-sub">histórico trabalhista</div>
+    </div>
+    <div class="kpi-card grn">
+      <div class="kpi-lbl">Favoráveis</div>
+      <div class="kpi-val">4.489</div>
+      <div class="kpi-sub">43.4% de êxito</div>
+    </div>
+    <div class="kpi-card red">
+      <div class="kpi-lbl">Desfavoráveis</div>
+      <div class="kpi-val">5.845</div>
+      <div class="kpi-sub">56.6% dos julgados</div>
+    </div>
+    <div class="kpi-card gold">
+      <div class="kpi-lbl">Acordos</div>
+      <div class="kpi-val">10.214</div>
+      <div class="kpi-sub">15.1% do total</div>
+    </div>
+    <div class="kpi-card gy">
+      <div class="kpi-lbl">Arquivados</div>
+      <div class="kpi-val">0</div>
+      <div class="kpi-sub">0.0% do total</div>
+    </div>
+    <div class="kpi-card org">
+      <div class="kpi-lbl">Duração Média</div>
+      <div class="kpi-val sm">0 d</div>
+      <div class="kpi-sub">do ajuizamento ao enc.</div>
+    </div>
   </div>
 
-  <div class="g-wide">
-    <div class="cc">
-      <div class="ct">Top 15 Profissionais — Volume de Processos <span class="ct-sub">base trabalhista ativa</span></div>
-      <div id="prof-bars" style="padding-top:6px;"></div>
+  <div class="res-grid">
+    <div class="res-card">
+      <div class="res-val grn-txt">4.489</div>
+      <div class="res-lbl">✅ Favoráveis ao cliente</div>
     </div>
-    <div class="cc">
-      <div class="ct">Top 10 <span class="ct-sub">gráfico</span></div>
-      <div class="cw h340"><canvas id="ch-prof"></canvas></div>
+    <div class="res-card">
+      <div class="res-val red-txt">5.845</div>
+      <div class="res-lbl">❌ Desfavoráveis</div>
+    </div>
+    <div class="res-card">
+      <div class="res-val gold-txt">10.214</div>
+      <div class="res-lbl">🤝 Acordos</div>
     </div>
   </div>
 
-  <div class="tc">
-    <div class="th">PROFISSIONAIS — TABELA COMPLETA <span class="th-badge">Top 20</span></div>
-    <div class="ts"><table>
-      <thead><tr><th>#</th><th>Profissional</th><th>Sigla</th><th class="tn">Processos</th><th class="tn">% Carteira</th><th>Grupo</th></tr></thead>
-      <tbody id="tb-profs"></tbody>
-    </table></div>
+  <div class="grid3">
+    <div class="pnl">
+      <div class="pnl-title">📋 Por Fase (encerrados)</div>
+      <div class="br"><div class="br-lbl">Instrução</div>
+<div class="br-wrap"><div class="br-bar" style="width:100%;background:#1ae3ff"></div></div>
+<div class="br-val">22.877</div></div><div class="br"><div class="br-lbl">Execução</div>
+<div class="br-wrap"><div class="br-bar" style="width:47%;background:#1ae3ff"></div></div>
+<div class="br-val">10.725</div></div><div class="br"><div class="br-lbl">Recursal</div>
+<div class="br-wrap"><div class="br-bar" style="width:32%;background:#1ae3ff"></div></div>
+<div class="br-val">7.342</div></div><div class="br"><div class="br-lbl">Acordo</div>
+<div class="br-wrap"><div class="br-bar" style="width:11%;background:#1ae3ff"></div></div>
+<div class="br-val">2.585</div></div><div class="br"><div class="br-lbl">Arquivado</div>
+<div class="br-wrap"><div class="br-bar" style="width:11%;background:#1ae3ff"></div></div>
+<div class="br-val">2.546</div></div><div class="br"><div class="br-lbl">Execução Definitiva</div>
+<div class="br-wrap"><div class="br-bar" style="width:6%;background:#1ae3ff"></div></div>
+<div class="br-val">1.472</div></div><div class="br"><div class="br-lbl">Inicial</div>
+<div class="br-wrap"><div class="br-bar" style="width:4%;background:#1ae3ff"></div></div>
+<div class="br-val">866</div></div><div class="br"><div class="br-lbl">2ª Instância</div>
+<div class="br-wrap"><div class="br-bar" style="width:4%;background:#1ae3ff"></div></div>
+<div class="br-val">837</div></div><div class="br"><div class="br-lbl">1ª Instância</div>
+<div class="br-wrap"><div class="br-bar" style="width:4%;background:#1ae3ff"></div></div>
+<div class="br-val">809</div></div><div class="br"><div class="br-lbl">Conhecimento</div>
+<div class="br-wrap"><div class="br-bar" style="width:3%;background:#1ae3ff"></div></div>
+<div class="br-val">672</div></div>
+    </div>
+    <div class="pnl">
+      <div class="pnl-title">👥 Por Grupo</div>
+      <div class="br"><div class="br-lbl">Grupo E2</div>
+<div class="br-wrap"><div class="br-bar" style="width:100%;background:#006080"></div></div>
+<div class="br-val">1.706</div></div><div class="br"><div class="br-lbl">Grupo E1</div>
+<div class="br-wrap"><div class="br-bar" style="width:74%;background:#006080"></div></div>
+<div class="br-val">1.267</div></div><div class="br"><div class="br-lbl">Grupo B1</div>
+<div class="br-wrap"><div class="br-bar" style="width:67%;background:#006080"></div></div>
+<div class="br-val">1.136</div></div><div class="br"><div class="br-lbl">Grupo B2</div>
+<div class="br-wrap"><div class="br-bar" style="width:58%;background:#006080"></div></div>
+<div class="br-val">982</div></div><div class="br"><div class="br-lbl">Grupo D1</div>
+<div class="br-wrap"><div class="br-bar" style="width:49%;background:#006080"></div></div>
+<div class="br-val">838</div></div><div class="br"><div class="br-lbl">Grupo B3</div>
+<div class="br-wrap"><div class="br-bar" style="width:46%;background:#006080"></div></div>
+<div class="br-val">785</div></div><div class="br"><div class="br-lbl">SG</div>
+<div class="br-wrap"><div class="br-bar" style="width:30%;background:#006080"></div></div>
+<div class="br-val">509</div></div><div class="br"><div class="br-lbl">MIGRAÇÃO PIPEK</div>
+<div class="br-wrap"><div class="br-bar" style="width:27%;background:#006080"></div></div>
+<div class="br-val">457</div></div><div class="br"><div class="br-lbl">GS</div>
+<div class="br-wrap"><div class="br-bar" style="width:19%;background:#006080"></div></div>
+<div class="br-val">322</div></div><div class="br"><div class="br-lbl">ED</div>
+<div class="br-wrap"><div class="br-bar" style="width:19%;background:#006080"></div></div>
+<div class="br-val">317</div></div>
+    </div>
+    <div class="pnl">
+      <div class="pnl-title">🔖 Tipo de Encerramento</div>
+      <div class="br"><div class="br-lbl">AUTOS ARQUIVADOS</div>
+<div class="br-wrap"><div class="br-bar" style="width:100%;background:#9ab8c4"></div></div>
+<div class="br-val">9.897</div></div><div class="br"><div class="br-lbl">MOTIVO PADRÃO</div>
+<div class="br-wrap"><div class="br-bar" style="width:83%;background:#9ab8c4"></div></div>
+<div class="br-val">8.168</div></div><div class="br"><div class="br-lbl">ACORDO REALIZADO PELO CLIENTE</div>
+<div class="br-wrap"><div class="br-bar" style="width:73%;background:#9ab8c4"></div></div>
+<div class="br-val">7.266</div></div><div class="br"><div class="br-lbl">RENÚNCIA DE PROCURAÇÃO OU SUBSTABELECIMENTO S</div>
+<div class="br-wrap"><div class="br-bar" style="width:67%;background:#9ab8c4"></div></div>
+<div class="br-val">6.589</div></div><div class="br"><div class="br-lbl">EXECUÇÃO QUITADA PELO CLIENTE</div>
+<div class="br-wrap"><div class="br-bar" style="width:61%;background:#9ab8c4"></div></div>
+<div class="br-val">6.050</div></div><div class="br"><div class="br-lbl">ENCERRADO - DESFAVORÁVEL AO CLIENTE</div>
+<div class="br-wrap"><div class="br-bar" style="width:59%;background:#9ab8c4"></div></div>
+<div class="br-val">5.845</div></div><div class="br"><div class="br-lbl">RENÚNCIA</div>
+<div class="br-wrap"><div class="br-bar" style="width:56%;background:#9ab8c4"></div></div>
+<div class="br-val">5.523</div></div><div class="br"><div class="br-lbl">ENCERRADO - FAVORÁVEL AO CLIENTE</div>
+<div class="br-wrap"><div class="br-bar" style="width:45%;background:#9ab8c4"></div></div>
+<div class="br-val">4.486</div></div>
+    </div>
   </div>
+
+  <div class="grid2">
+    <div class="pnl">
+      <div class="pnl-title">🏢 Top Clientes (encerrados)</div>
+      <div class="br"><div class="br-lbl">LOJAS AMERICANAS</div>
+<div class="br-wrap"><div class="br-bar" style="width:100%;background:#c9a84c"></div></div>
+<div class="br-val">5.391</div></div><div class="br"><div class="br-lbl">BANCO SANTANDER</div>
+<div class="br-wrap"><div class="br-bar" style="width:89%;background:#c9a84c"></div></div>
+<div class="br-val">4.783</div></div><div class="br"><div class="br-lbl">B2W</div>
+<div class="br-wrap"><div class="br-bar" style="width:77%;background:#c9a84c"></div></div>
+<div class="br-val">4.143</div></div><div class="br"><div class="br-lbl">ROBERT BOSCH</div>
+<div class="br-wrap"><div class="br-bar" style="width:65%;background:#c9a84c"></div></div>
+<div class="br-val">3.528</div></div><div class="br"><div class="br-lbl">BP BIOENERGIA</div>
+<div class="br-wrap"><div class="br-bar" style="width:46%;background:#c9a84c"></div></div>
+<div class="br-val">2.497</div></div><div class="br"><div class="br-lbl">CPM BRAXIS CAPGEMINI</div>
+<div class="br-wrap"><div class="br-bar" style="width:46%;background:#c9a84c"></div></div>
+<div class="br-val">2.456</div></div><div class="br"><div class="br-lbl">MAHLE METAL - MOJI</div>
+<div class="br-wrap"><div class="br-bar" style="width:44%;background:#c9a84c"></div></div>
+<div class="br-val">2.371</div></div><div class="br"><div class="br-lbl">GI GROUP - KELLY</div>
+<div class="br-wrap"><div class="br-bar" style="width:41%;background:#c9a84c"></div></div>
+<div class="br-val">2.196</div></div>
+    </div>
+    <div class="pnl">
+      <div class="pnl-title">📅 Encerramentos por Ano (2015–)</div>
+      <div class="br"><div class="br-lbl">2015</div>
+<div class="br-wrap"><div class="br-bar" style="width:39%;background:#e07a1f"></div></div>
+<div class="br-val">3.441</div></div><div class="br"><div class="br-lbl">2016</div>
+<div class="br-wrap"><div class="br-bar" style="width:39%;background:#e07a1f"></div></div>
+<div class="br-val">3.478</div></div><div class="br"><div class="br-lbl">2017</div>
+<div class="br-wrap"><div class="br-bar" style="width:33%;background:#e07a1f"></div></div>
+<div class="br-val">2.893</div></div><div class="br"><div class="br-lbl">2018</div>
+<div class="br-wrap"><div class="br-bar" style="width:56%;background:#e07a1f"></div></div>
+<div class="br-val">4.935</div></div><div class="br"><div class="br-lbl">2019</div>
+<div class="br-wrap"><div class="br-bar" style="width:33%;background:#e07a1f"></div></div>
+<div class="br-val">2.880</div></div><div class="br"><div class="br-lbl">2020</div>
+<div class="br-wrap"><div class="br-bar" style="width:33%;background:#e07a1f"></div></div>
+<div class="br-val">2.884</div></div><div class="br"><div class="br-lbl">2021</div>
+<div class="br-wrap"><div class="br-bar" style="width:43%;background:#e07a1f"></div></div>
+<div class="br-val">3.782</div></div><div class="br"><div class="br-lbl">2022</div>
+<div class="br-wrap"><div class="br-bar" style="width:32%;background:#e07a1f"></div></div>
+<div class="br-val">2.819</div></div><div class="br"><div class="br-lbl">2023</div>
+<div class="br-wrap"><div class="br-bar" style="width:100%;background:#e07a1f"></div></div>
+<div class="br-val">8.829</div></div><div class="br"><div class="br-lbl">2024</div>
+<div class="br-wrap"><div class="br-bar" style="width:41%;background:#e07a1f"></div></div>
+<div class="br-val">3.604</div></div><div class="br"><div class="br-lbl">2025</div>
+<div class="br-wrap"><div class="br-bar" style="width:38%;background:#e07a1f"></div></div>
+<div class="br-val">3.390</div></div><div class="br"><div class="br-lbl">2026</div>
+<div class="br-wrap"><div class="br-bar" style="width:15%;background:#e07a1f"></div></div>
+<div class="br-val">1.321</div></div><div class="br"><div class="br-lbl">2028</div>
+<div class="br-wrap"><div class="br-bar" style="width:0%;background:#e07a1f"></div></div>
+<div class="br-val">1</div></div>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div class="pnl">
+      <div class="pnl-title">👤 Top Profissionais (encerrados)</div>
+      <div class="br"><div class="br-lbl">Luiz Vicente de Carvalho</div>
+<div class="br-wrap"><div class="br-bar" style="width:100%;background:#00897b"></div></div>
+<div class="br-val">45.362</div></div><div class="br"><div class="br-lbl">Fábio Garuti Marques</div>
+<div class="br-wrap"><div class="br-bar" style="width:9%;background:#00897b"></div></div>
+<div class="br-val">4.127</div></div><div class="br"><div class="br-lbl">Paloma da Silva Santos</div>
+<div class="br-wrap"><div class="br-bar" style="width:5%;background:#00897b"></div></div>
+<div class="br-val">2.153</div></div><div class="br"><div class="br-lbl">Vinícius Ronchi Arruda</div>
+<div class="br-wrap"><div class="br-bar" style="width:1%;background:#00897b"></div></div>
+<div class="br-val">660</div></div><div class="br"><div class="br-lbl">Jessica Cerqueira Silva</div>
+<div class="br-wrap"><div class="br-bar" style="width:1%;background:#00897b"></div></div>
+<div class="br-val">568</div></div><div class="br"><div class="br-lbl">Rafael Yepez do Lago</div>
+<div class="br-wrap"><div class="br-bar" style="width:1%;background:#00897b"></div></div>
+<div class="br-val">532</div></div><div class="br"><div class="br-lbl">Aline Ferreira Miron</div>
+<div class="br-wrap"><div class="br-bar" style="width:1%;background:#00897b"></div></div>
+<div class="br-val">499</div></div><div class="br"><div class="br-lbl">Renato Omelczuk Loschiavo</div>
+<div class="br-wrap"><div class="br-bar" style="width:1%;background:#00897b"></div></div>
+<div class="br-val">420</div></div>
+    </div>
+  </div>
+
 </div>
 
-<!-- ══ TAB 3 — FLUXO ANUAL ═══════════════════════════════════════ -->
-<div class="tab-content">
-  <div class="sec">Entradas por mês — 2024 a Mar/2026</div>
-
-  <div class="g-full cc" style="margin-bottom:16px;">
-    <div class="ct">Novos Processos por Mês <span class="ct-sub">jan/2024 → mar/2026 · base trabalhista</span></div>
-    <div class="cw h260"><canvas id="ch-mes"></canvas></div>
-  </div>
-
-  <div class="sec">Entradas e saídas por ano — base completa (inclui encerrados)</div>
-  <div class="kpi-row">
-    <div class="kcard acc"><div class="klbl">Maior Entrada (ano)</div><div class="kval">7.399</div><div class="ksub">2022 — pico histórico</div></div>
-    <div class="kcard grn"><div class="klbl">Entradas 2025</div><div class="kval">3.837</div><div class="ksub">processos novos</div></div>
-    <div class="kcard org"><div class="klbl">Entradas 2026</div><div class="kval">1.255</div><div class="ksub">jan–mar/2026</div></div>
-    <div class="kcard red"><div class="klbl">Maior Saída (ano)</div><div class="kval">8.829</div><div class="ksub">2023 — pico de encerramentos</div></div>
-    <div class="kcard grn"><div class="klbl">Saídas 2025</div><div class="kval">3.386</div><div class="ksub">processos encerrados</div></div>
-    <div class="kcard gy"><div class="klbl">Saldo 2025</div><div class="kval">+451</div><div class="ksub">entradas − saídas</div></div>
-  </div>
-
-  <div class="g-full cc" style="margin-bottom:16px;">
-    <div class="ct">Entradas vs Encerramentos por Ano <span class="ct-sub">2010–2026</span></div>
-    <div class="cw h300"><canvas id="ch-fluxo"></canvas></div>
-  </div>
-
-  <div class="g2">
-    <div class="cc">
-      <div class="ct">Saldo Anual <span class="ct-sub">entradas − encerramentos (2015–2026)</span></div>
-      <div class="cw h220"><canvas id="ch-saldo"></canvas></div>
-    </div>
-    <div class="cc">
-      <div class="ct">Entradas Recentes <span class="ct-sub">2020–2026</span></div>
-      <div class="cw h220"><canvas id="ch-entry-rec"></canvas></div>
-    </div>
-  </div>
+<div class="footer">
+  <div>Peixoto &amp; Cury Advogados &nbsp;·&nbsp; <strong>Controladoria</strong> &nbsp;·&nbsp; Gerencial Trabalhista</div>
+  <div>Base: <strong>Jun/2026</strong> &nbsp;·&nbsp; <strong>peixotoecury.github.io/gerencial</strong></div>
 </div>
-
-<!-- ══ TAB 4 — HISTÓRICO ══════════════════════════════════════════ -->
-<div class="tab-content">
-  <div class="sec">Base histórica completa — todos os processos desde 1994</div>
-  <div class="kpi-row">
-    <div class="kcard nav"><div class="klbl">Total Histórico</div><div class="kval">75.425</div><div class="ksub">processos desde 1994 — base completa</div></div>
-    <div class="kcard grn"><div class="klbl">Favoráveis ao Cliente</div><div class="kval">10.334</div><div class="ksub">64% de êxito (fav. vs desfav.)</div></div>
-    <div class="kcard gold"><div class="klbl">Acordos Realizados</div><div class="kval">10.165</div><div class="ksub">encerrados por composição</div></div>
-    <div class="kcard red"><div class="klbl">Desfavoráveis</div><div class="kval">5.845</div><div class="ksub">encerrados contra o cliente</div></div>
-    <div class="kcard acc"><div class="klbl">Arquivados</div><div class="kval">9.889</div><div class="ksub">autos arquivados</div></div>
-    <div class="kcard gy"><div class="klbl">Encerrados Total</div><div class="kval">67.208</div><div class="ksub">89% da base histórica</div></div>
-  </div>
-
-  <div class="g2">
-    <div class="cc">
-      <div class="ct">Tipo de Encerramento <span class="ct-sub">top 8 motivos</span></div>
-      <div class="cw h300"><canvas id="ch-enc"></canvas></div>
-    </div>
-    <div class="cc">
-      <div class="ct">Top 10 Clientes — Base Histórica <span class="ct-sub">volume total</span></div>
-      <div class="cw h300"><canvas id="ch-cli-hist"></canvas></div>
-    </div>
-  </div>
-</div>
-
-<div class="tab-content">
-  <div class="sec">SÓCIOS — CARTEIRA E PROFISSIONAIS</div>
-  <div class="tc">
-    <div class="th">Grupos e Profissionais <span class="th-badge">estrutura completa</span></div>
-    <div class="ts">
-      <table>
-        <thead>
-          <tr>
-            <th style="width: 15%;">GRUPO</th>
-            <th style="text-align: left;">PROFISSIONAL</th>
-            <th style="text-align: right; width: 12%;">PROCESSOS</th>
-          </tr>
-        </thead>
-        <tbody id="tb-socios"></tbody>
-      </table>
-    </div>
-  </div>
-</div>
-
-</main>
 
 <script>
-// ── DATA ────────────────────────────────────────────────────────────
-
-const MESES_LABEL = ['Jan/24','Fev/24','Mar/24','Abr/24','Mai/24','Jun/24','Jul/24','Ago/24','Set/24','Out/24','Nov/24','Dez/24','Jan/25','Fev/25','Mar/25','Abr/25','Mai/25','Jun/25','Jul/25','Ago/25','Set/25','Out/25','Nov/25','Dez/25','Jan/26','Fev/26','Mar/26'];
-const ENTRY_MES   = [473,52,73,83,99,101,82,85,138,103,88,86,129,148,126,273,350,130,165,159,213,747,171,193,230,315,92];
-const GRUPOS = [
-  { id:'A1', n:26,   cls:'cA', profs:[['MNB',21,'Marina de Novaes Brechiani'],['NBG',2,'Natália Biondi Gaggini Robles'],['TCE',1,'Thais Catharine Cardozo Esteves']] },
-  { id:'A2', n:33,   cls:'cA', profs:[['NBG',32,'Natália Biondi Gaggini Robles']] },
-  { id:'A3', n:158,  cls:'cA', profs:[['SOF',117,'Sofia Freire'],['VSI',30,'Vinicius da Silva Cerqueira'],['TFR',5,'Thiago Frid Figueiredo Rossi']] },
-  { id:'B1', n:1423, cls:'cB', profs:[['JJS',316,'Jenifer de Jesus Silva'],['RFE',286,'Rafael Rocha Ferreira'],['BSO',275,'Beatriz Santiago de Souza'],['JPE',235,'Juliana Perucci'],['GSM',230,'Guilherme Silva Morimoto'],['NRG',80,'Nicolau Rafael Guimarães Coelho']] },
-  { id:'B2', n:748,  cls:'cB', profs:[['VCR',247,'Vanessa de Cassia Castrequini Rosa'],['BCF',271,'Bruna Cembranelli Fazenda'],['ANB',188,'Anna Carolina Balbino Gatti Baani'],['NRG',42,'Nicolau Rafael Guimarães Coelho']] },
-  { id:'B3', n:545,  cls:'cB', profs:[['LMI',254,'Letícia Meneghini Fontes'],['ANB',79,'Anna Carolina Balbino Gatti Baani'],['NRG',80,'Nicolau Rafael Guimarães Coelho'],['JPE',74,'Juliana Perucci'],['GSM',56,'Guilherme Silva Morimoto']] },
-  { id:'C',  n:590,  cls:'cC', profs:[['ECO',209,'Erik Mota Coppi'],['TFR',142,'Thiago Frid Figueiredo Rossi'],['RCF',141,'Rafael Camargo Felisbino'],['VSI',97,'Vinicius da Silva Cerqueira']] },
-  { id:'D1', n:811,  cls:'cD', profs:[['JQS',461,'Jessica Cerqueira Silva'],['BBO',349,'Bianca Bolanhi Camacho']] },
-  { id:'E1', n:1815, cls:'cE', profs:[['PSI',447,'Paloma da Silva Santos'],['JPL',407,'Júlia Priego Lopes da Silva'],['VRO',287,'Vinícius Ronchi Arruda'],['ALF',316,'Aline Ferreira Miron'],['JRM',157,'Joice Ramos Miranda'],['DPR',155,'Daniela Prandi Pedro Ricca'],['AAP',29,'André Alessandro de Paula']] },
-  { id:'E2', n:2060, cls:'cE', profs:[['CAL',386,'Camila Alves Magalhães de Paula'],['RYL',385,'Rafael Yepez do Lago'],['ARC',379,'Arthur R. Rios Toledo de Castro'],['RRU',316,'Richard Ruan Leo da Silva'],['JRT',285,'Jackeline Romeu Torres'],['MBF',185,'Mariana Borges de Menezes Fávaro'],['RCF',63,'Rafael Camargo Felisbino'],['AAP',54,'André Alessandro de Paula'],['WSF',4,'Washington Soares Silva Filho']] },
-];
-
-const FASE_GRUPO = {
-  'E2':{Instrução:620,Recursal:580,Execução:320,Outros:540},
-  'E1':{Instrução:510,Recursal:610,Execução:240,Outros:455},
-  'B1':{Instrução:380,Recursal:310,Execução:420,Outros:313},
-  'D1':{Instrução:200,Recursal:260,Execução:180,Outros:171},
-  'B2':{Instrução:210,Recursal:195,Execução:140,Outros:203},
-  'C' :{Instrução:160,Recursal:140,Execução: 90,Outros:200},
-  'B3':{Instrução:150,Recursal:130,Execução: 95,Outros:170},
-  'A3':{Instrução: 55,Recursal: 48,Execução: 18,Outros: 37},
-  'A2':{Instrução: 12,Recursal: 10,Execução:  5,Outros:  6},
-  'A1':{Instrução:  8,Recursal:  7,Execução:  4,Outros:  7},
-};
-
-const PROFS = [
-  ['Jessica Cerqueira Silva',461,'JQS','D1'],
-  ['Paloma da Silva Santos',447,'PSI','E1'],
-  ['Júlia Priego Lopes da Silva',407,'JPL','E1'],
-  ['Camila Alves Magalhães de Paula',386,'CAL','E2'],
-  ['Rafael Yepez do Lago',385,'RYL','E2'],
-  ['Arthur R. Rios Toledo de Castro',379,'ARC','E2'],
-  ['Bianca Bolanhi Camacho',349,'BBO','D1'],
-  ['Aline Ferreira Miron',316,'ALF','E1'],
-  ['Jenifer de Jesus Silva',316,'JJS','B1'],
-  ['Richard Ruan Leo da Silva',316,'RRU','E2'],
-  ['Juliana Perucci',309,'JPE','B1/B3'],
-  ['Vinícius Ronchi Arruda',287,'VRO','E1'],
-  ['Rafael Rocha Ferreira',286,'RFE','B1'],
-  ['Guilherme Silva Morimoto',286,'GSM','B1/B3'],
-  ['Jackeline Romeu Torres',285,'JRT','E2'],
-  ['Beatriz Santiago de Souza',275,'BSO','B1'],
-  ['Bruna Cembranelli Fazenda',271,'BCF','B2'],
-  ['Anna Carolina Balbino Gatti Baani',267,'ANB','B2/B3'],
-  ['Letícia Meneghini Fontes',254,'LMI','B3'],
-  ['Vanessa Castrequini Rosa',247,'VCR','B2'],
-].sort((a,b)=>b[1]-a[1]);
-
-const ANOS = [2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024,2025,2026];
-const ENTRY = [2391,2708,3111,4059,3639,3150,3322,4161,3682,4594,2631,2589,7399,5050,3155,3837,1255];
-const SAIDA = [2391,2120,2804,2543,4135,3441,3478,2893,4935,2880,2884,3782,2819,8829,3603,3386,1111];
-
-const ESTADO_AT = [['SP',6487],['MG',482],['RS',227],['RJ',224],['PR',203],['BA',112],['GO',98],['MS',93]];
-const CLI_AT = [['BRIDGESTONE',1452],['BP BIOENERGIA',753],['EMBRAER',717],['MAHLE METAL',705],['SYNGENTA PROTEÇÃO',660],['LOJAS AMERICANAS',364],['HERINGER',351],['VITERRA RIO VERMELHO',314],['TELEFONICA BRASIL',301],['CBC',247]];
-const FASE_AT = [['Instrução',2301],['Recursal',1781],['Execução',1160],['1ª Instância',457],['Conhecimento',429],['2ª Instância',415],['Recursal TST',390],['Inicial',303],['Administrativa',249],['3ª Instância',202]];
-const CLI_HIST = [['LOJAS AMERICANAS',5728],['BANCO SANTANDER',4783],['B2W',4369],['ROBERT BOSCH',3723],['BRIDGESTONE',3573],['BP BIOENERGIA',3243],['MAHLE METAL',3011],['CPM BRAXIS',2456],['GI GROUP',2196],['VIVANTE',2039]];
-const ENC_TIPO = [['Autos Arquivados',9889],['Motivo Padrão',8168],['Acordo pelo Cliente',7231],['Renúncia de Procuração',6588],['Execução Quitada',5977],['Desfavorável',5845],['Renúncia',5523],['Favorável',4486]];
-
-// ── COLORS ──────────────────────────────────────────────────────────
-const C = {
-  navy:'#002233', teal:'#007a9a', acc:'#00bcd4', red:'#c62828',
-  org:'#e07a1f', grn:'#00897b', gold:'#c9a84c', purple:'#6c63ff', gray:'#a8bfc8',
-  set:['#006080','#1ae3ff','#00897b','#c9a84c','#007a9a','#e07a1f','#c62828','#26a69a','#8d6e63','#546e7a'],
-  grupo:g=>({E:'#006080',B:'#00897b',D:'#e07a1f',A:'#1ae3ff',C:'#c9a84c',S:'#a8bfc8'}[g[0]]||'#607c8e'),
-};
-
-Chart.register(ChartDataLabels);
-Chart.defaults.font.family = "'DM Sans', sans-serif";
-Chart.defaults.plugins.datalabels = { display: false }; // off by default, on per chart
-Chart.defaults.plugins.tooltip.titleFont = {family:"'DM Sans',sans-serif"};
-Chart.defaults.plugins.tooltip.bodyFont  = {family:"'DM Mono',monospace"};
-
-function chart(id, type, labels, datasets, opts={}) {
-  const el = document.getElementById(id); if(!el) return;
-  const sc = opts.horiz
-    ? { x:{grid:{color:'#f0f4f7'},ticks:{font:{family:"'DM Mono',monospace",size:10}}}, y:{grid:{display:false},ticks:{font:{family:"'DM Mono',monospace",size:10}}} }
-    : { x:{grid:{display:false},ticks:{font:{family:"'DM Mono',monospace",size:10}}}, y:{grid:{color:'#f0f4f7'},ticks:{font:{family:"'DM Mono',monospace",size:10}}} };
-  if(opts.stacked){ sc.x.stacked=true; sc.y.stacked=true; }
-  return new Chart(el,{
-    type, data:{labels,datasets},
-    options:{
-      responsive:true, maintainAspectRatio:false,
-      indexAxis: opts.horiz ? 'y' : 'x',
-      plugins:{
-        legend:{display:opts.legend||false, position:opts.legendPos||'top',
-          labels:{font:{family:"'DM Sans',sans-serif",size:11},padding:14,boxWidth:12,usePointStyle:true}},
-        datalabels:{display:false}
-      },
-      scales: opts.noScale ? {} : (opts.scales || sc),
-      ...(opts.extra||{})
-    }
-  });
-}
-
-// ── INIT ────────────────────────────────────────────────────────────
-document.getElementById('hdr-date').textContent =
-  new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'2-digit',month:'long',year:'numeric'});
-
-const tabs  = document.querySelectorAll('.tab-content');
-const btns  = document.querySelectorAll('.tab-btn');
-let built = {0:false};
-
-function sw(i, el) {
-  tabs.forEach((t,j) => t.classList.toggle('active', j===i));
-  btns.forEach((b,j) => b.classList.toggle('active', j===i));
-  if(!built[i]){ built[i]=true; buildTab(i); }
-}
-
-function buildTab(i) {
-  if(i===0) tab0();
-  if(i===1) tab1();
-  if(i===2) tab2();
-  if(i===3) tab3();
-  if(i===4) tab4();
-  if(i===5) tab5();
-}
-tab0();
-
-// ── TAB 0 ── Em Andamento ───────────────────────────────────────
-function tab0() {
-  chart('ch-cli-at','bar',
-    CLI_AT.map(x=>x[0].split(' ')[0]),
-    [{label:'Valores',data:CLI_AT.map(x=>x[1]),backgroundColor:['#006080cc','#1ae3ffcc','#00897bcc','#c9a84ccc','#007a9acc','#e07a1fcc','#c62828cc','#26a69acc','#8d6e63cc','#546e7acc'],borderColor:['#006080','#1ae3ff','#00897b','#c9a84c','#007a9a','#e07a1f','#c62828','#26a69a','#8d6e63','#546e7a'],borderWidth:1.5,borderRadius:6,barThickness:22}],
-    { extra:{ plugins:{ datalabels:{ display:true, anchor:'end', align:'top', font:{family:"'DM Mono',monospace",size:10,weight:'600'}, color:'#003a52', formatter:v=>v.toLocaleString('pt-BR') } } } }
-  );
-  chart('ch-fase-at','bar',
-    FASE_AT.map(x=>x[0]),
-    [{label:'Processos',data:FASE_AT.map(x=>x[1]),backgroundColor:'#006080bb',borderColor:'#006080',borderWidth:1.5,borderRadius:4,barThickness:18}],
-    {horiz:true}
-  );
-  chart('ch-estado-at','bar',
-    ESTADO_AT.map(x=>x[0]),
-    [{label:'Processos',data:ESTADO_AT.map(x=>x[1]),backgroundColor:'#006080bb',borderColor:'#006080',borderWidth:1.5,borderRadius:5,barThickness:22}],
-    {extra:{plugins:{datalabels:{display:true,anchor:'end',align:'top',font:{family:"'DM Mono',monospace",size:10,weight:'600'},color:'#003a52',formatter:v=>v.toLocaleString('pt-BR')}}}}
-  );
-  chart('ch-grupo-home','bar',
-    GRUPOS.map(g=>'G '+g.id),
-    [{label:'Volume',data:GRUPOS.map(g=>g.n),backgroundColor:GRUPOS.map(g=>C.grupo(g.id)+'cc'),borderColor:GRUPOS.map(g=>C.grupo(g.id)),borderWidth:1.5,borderRadius:6,barThickness:22}],
-    {extra:{plugins:{datalabels:{display:true,anchor:'end',align:'top',font:{family:"'DM Mono',monospace",size:9,weight:'700'},color:'#003a52',formatter:v=>v.toLocaleString('pt-BR')}}}}
-  );
-
-  // Tabela Grupos e Profissionais com Processos
-  document.getElementById('tb-g-prof').innerHTML = GRUPOS.map(g => {
-    return g.profs.map((p, idx) => {
-      const isFirst = idx === 0;
-      const rowspan = g.profs.length > 1 ? ` rowspan="${g.profs.length}"` : '';
-      return `<tr>
-        ${isFirst ? `<td${rowspan} style="font-weight:700; background:rgba(0,0,0,0.02); vertical-align:top;">Grupo ${g.id}<br><span style="font-size:11px; color:var(--gray3); font-weight:400;">${g.n.toLocaleString('pt-BR')}</span></td>` : ''}
-        <td style="font-weight:600;">${p[2]}</td>
-        <td class="tn" style="font-weight:700;">${p[1].toLocaleString('pt-BR')}</td>
-      </tr>`;
-    }).join('');
-  }).join('');
-
-  document.getElementById('tb-cli-at').innerHTML = CLI_AT.map((r,i)=>`<tr>
-    <td style="color:var(--gray4);font-weight:600;">${i+1}</td>
-    <td style="font-weight:600;">${r[0]}</td>
-    <td class="tn" style="font-weight:700;">${r[1].toLocaleString('pt-BR')}</td>
-    <td class="tn" style="color:var(--gray4);">${(r[1]/8217*100).toFixed(1)}%</td>
-    <td><span class="tc-pill p-gy">${['Recursal','Instrução','Execução','Instrução','Instrução','Recursal','Execução','Execução','Recursal','Instrução'][i]}</span></td>
-  </tr>`).join('');
-}
-
-// ── TAB 1 ── Por Grupo ──────────────────────────────────────────
-function tab1() {
-  // Grupo cards
-  const el = document.getElementById('grupo-cards');
-  el.innerHTML = GRUPOS.map(g => {
-    const maxP = g.profs[0]?.[1] || 1;
-    const profHtml = g.profs.slice(0,4).map(p => `
-      <div class="g-prof-row">
-        <span class="g-sigla">${p[0]}</span>
-        <span class="g-prof-name" title="${p[2]}">${p[2].split(' ').slice(0,2).join(' ')}</span>
-        <span class="g-prof-n">${p[1]}</span>
-      </div>
-      <div class="g-bar-wrap"><div class="g-bar-fill" style="width:${Math.round(p[1]/maxP*100)}%;background:${C.grupo(g.id)};"></div></div>
-    `).join('');
-    return `<div class="gcard ${g.cls}">
-      <div class="g-name">Grupo ${g.id}</div>
-      <div class="g-num">${g.n.toLocaleString('pt-BR')}</div>
-      <div class="g-sub">${(g.n/8217*100).toFixed(1)}% da carteira &nbsp;·&nbsp; ${g.profs.length} prof.</div>
-      <div class="g-profs">${profHtml}</div>
-    </div>`;
-  }).join('');
-
-  // Volume bar
-  chart('ch-g-vol','bar',
-    GRUPOS.map(g=>'G '+g.id),
-    [{label:'Volume',data:GRUPOS.map(g=>g.n),backgroundColor:GRUPOS.map(g=>C.grupo(g.id)+'cc'),borderColor:GRUPOS.map(g=>C.grupo(g.id)),borderWidth:1.5,borderRadius:6,barThickness:28}],
-    { extra:{ plugins:{ datalabels:{ display:true, anchor:'end', align:'top', font:{family:"'DM Mono',monospace",size:10,weight:'600'}, color:'#003a52', formatter:v=>v.toLocaleString('pt-BR') } } } }
-  );
-
-  // Fase stacked
-  const gs = GRUPOS.slice(0,8);
-  chart('ch-g-fase','bar',
-    gs.map(g=>'G '+g.id),
-    [
-      {label:'Instrução', data:gs.map(g=>FASE_GRUPO[g.id]?.Instrução||0), backgroundColor:'#006080cc', borderRadius:4},
-      {label:'Recursal',  data:gs.map(g=>FASE_GRUPO[g.id]?.Recursal||0),  backgroundColor:C.purple+'cc'},
-      {label:'Execução',  data:gs.map(g=>FASE_GRUPO[g.id]?.Execução||0),  backgroundColor:C.grn+'cc'},
-      {label:'Outros',    data:gs.map(g=>FASE_GRUPO[g.id]?.Outros||0),    backgroundColor:C.gray+'99'},
-    ],
-    {legend:true, stacked:true}
-  );
-
-  // Table
-  document.getElementById('tb-g-fase').innerHTML = GRUPOS.map(g=>{
-    const f = FASE_GRUPO[g.id]||{};
-    const nProfs = g.profs.length;
-    const profNames = g.profs.slice(0,3).map(p=>`<span class="tc-pill p-gy">${p[0]}</span>`).join(' ');
-    return `<tr>
-      <td style="font-weight:700;">Grupo ${g.id}</td>
-      <td class="tn" style="font-weight:700;">${g.n.toLocaleString('pt-BR')}</td>
-      <td class="tn">${(f.Instrução||0).toLocaleString('pt-BR')}</td>
-      <td class="tn">${(f.Recursal||0).toLocaleString('pt-BR')}</td>
-      <td class="tn">${(f.Execução||0).toLocaleString('pt-BR')}</td>
-      <td class="tn" style="color:var(--gray4);">${(f.Outros||0).toLocaleString('pt-BR')}</td>
-      <td>${profNames}${nProfs>3?` <span style="font-size:10px;color:var(--gray4);">+${nProfs-3}</span>`:''}</td>
-    </tr>`;
-  }).join('');
-}
-
-// ── TAB 2 ── Profissionais ──────────────────────────────────────
-function tab2() {
-  const top15 = PROFS.slice(0,15);
-  const maxP = top15[0][1];
-
-  // Bar rows
-  document.getElementById('prof-bars').innerHTML = top15.map((p,i) => {
-    const gc = {D1:'p-org',E1:'p-acc',E2:'p-purple',B1:'p-grn',B2:'p-grn',B3:'p-grn',C:'p-gold',A1:'p-acc',A2:'p-acc',A3:'p-acc'}[p[3]]||'p-gy';
-    const col = C.grupo(p[3]);
-    return `<div class="bar-row">
-      <div class="bar-lbl" title="${p[0]}"><span class="tc-pill ${gc}" style="margin-right:6px;font-family:'DM Mono',monospace;">${p[2]}</span>${p[0].split(' ').slice(0,2).join(' ')}</div>
-      <div class="bar-track"><div class="bar-fill" style="width:${Math.round(p[1]/maxP*100)}%;background:${col};"></div></div>
-      <div class="bar-val">${p[1]}</div>
-    </div>`;
-  }).join('');
-
-  // Chart top 10
-  const top10 = PROFS.slice(0,10);
-  chart('ch-prof','bar',
-    top10.map(p=>p[2]),
-    [{label:'Processos',data:top10.map(p=>p[1]),backgroundColor:top10.map(p=>C.grupo(p[3])+'cc'),borderColor:top10.map(p=>C.grupo(p[3])),borderWidth:1.5,borderRadius:5,barThickness:20}],
-    {horiz:true, extra:{ plugins:{ datalabels:{ display:true, anchor:'end', align:'right', font:{family:"'DM Mono',monospace",size:10,weight:'700'}, color:'#003a52', formatter:v=>v } } } }
-  );
-
-  // Table
-  document.getElementById('tb-profs').innerHTML = PROFS.slice(0,20).map((p,i)=>{
-    const gc = {D1:'p-org',E1:'p-acc',E2:'p-purple',B1:'p-grn',B2:'p-grn',B3:'p-grn',C:'p-gold',A1:'p-acc',A2:'p-acc',A3:'p-acc'}[p[3]]||'p-gy';
-    return `<tr>
-      <td style="color:var(--gray4);font-weight:600;">${i+1}</td>
-      <td style="font-weight:600;">${p[0]}</td>
-      <td><span class="tc-pill p-gy" style="font-family:'DM Mono',monospace;">${p[2]}</span></td>
-      <td class="tn" style="font-weight:700;">${p[1].toLocaleString('pt-BR')}</td>
-      <td class="tn" style="color:var(--gray4);">${(p[1]/8217*100).toFixed(1)}%</td>
-      <td><span class="tc-pill ${gc}">Grupo ${p[3]}</span></td>
-    </tr>`;
-  }).join('');
-}
-
-// ── TAB 3 ── Fluxo Anual ────────────────────────────────────────
-function tab3() {
-  // Monthly entries chart
-  chart('ch-mes','bar', MESES_LABEL, [{
-    label:'Entradas',
-    data: ENTRY_MES,
-    backgroundColor: ENTRY_MES.map(v => v>=300 ? '#006080' : v>=150 ? '#007a9a' : '#1ae3ff99'),
-    borderColor: ENTRY_MES.map(v => v>=300 ? '#006080' : v>=150 ? '#007a9a' : '#1ae3ff'),
-    borderWidth: 1.5, borderRadius: 6, barThickness: 18,
-  }], {
-    extra: {
-      plugins: {
-        datalabels: { display: true, anchor:'end', align:'top',
-          font:{family:"'DM Mono',monospace", size:9, weight:'600'},
-          color: ctx => ctx.dataset.data[ctx.dataIndex] >= 300 ? '#c62828' : '#006080',
-          formatter: v => v >= 50 ? v : ''
-        }
-      }
-    }
-  });
-
-  chart('ch-fluxo','bar',ANOS,
-    [
-      {label:'Entradas',data:ENTRY,backgroundColor:'#006080cc',borderColor:'#006080',borderWidth:1.5,borderRadius:5,barThickness:26},
-      {label:'Encerramentos',data:SAIDA,backgroundColor:C.red+'aa',borderColor:C.red,borderWidth:1.5,borderRadius:5,barThickness:26},
-    ],
-    {legend:true}
-  );
-
-  const anos15 = ANOS.slice(5);
-  const entry15 = ENTRY.slice(5);
-  const saida15 = SAIDA.slice(5);
-  const saldo15 = anos15.map((_,i)=>entry15[i]-saida15[i]);
-  chart('ch-saldo','bar',anos15,
-    [{label:'Saldo',data:saldo15,backgroundColor:saldo15.map(v=>v>=0?'#006080cc':C.red+'cc'),borderColor:saldo15.map(v=>v>=0?C.teal:C.red),borderWidth:1.5,borderRadius:5,barThickness:26}]
-  );
-
-  const anosRec = [2020,2021,2022,2023,2024,2025,2026];
-  const idxRec  = anosRec.map(a=>ANOS.indexOf(a));
-  chart('ch-entry-rec','line',anosRec,
-    [
-      {label:'Entradas',data:idxRec.map(i=>ENTRY[i]),borderColor:'#006080',backgroundColor:'#1ae3ff18',fill:true,tension:.4,borderWidth:2.5,pointRadius:5,pointHoverRadius:7},
-      {label:'Saídas',  data:idxRec.map(i=>SAIDA[i]),borderColor:C.red,backgroundColor:C.red+'10',fill:true,tension:.4,borderWidth:2.5,pointRadius:5,pointHoverRadius:7},
-    ],
-    {legend:true}
-  );
-}
-
-// ── TAB 4 ── Histórico ─────────────────────────────────────────
-function tab4() {
-  chart('ch-enc','bar',
-    ENC_TIPO.map(x=>x[0]),
-    [{label:'Quantidade',data:ENC_TIPO.map(x=>x[1]),backgroundColor:[C.grn,C.gray,C.gold,C.gray,C.grn,C.red,C.gold,C.grn].map(c=>c+'bb'),borderColor:[C.grn,C.gray,C.gold,C.gray,C.grn,C.red,C.gold,C.grn],borderWidth:1.5,borderRadius:4,barThickness:18}],
-    {horiz:true}
-  );
-  chart('ch-cli-hist','bar',
-    CLI_HIST.map(x=>x[0].split(' ')[0]),
-    [{label:'Processos',data:CLI_HIST.map(x=>x[1]),backgroundColor:['#006080cc','#1ae3ffcc','#00897bcc','#c9a84ccc','#007a9acc','#e07a1fcc','#c62828cc','#26a69acc','#8d6e63cc','#546e7acc'],borderColor:['#006080','#1ae3ff','#00897b','#c9a84c','#007a9a','#e07a1f','#c62828','#26a69a','#8d6e63','#546e7a'],borderWidth:1.5,borderRadius:6,barThickness:22}]
-  );
-}
-
-// ── TAB 5 ── Sócios ────────────────────────────────────────────────
-function tab5() {
-  const sociosData = [
-    {grupo:'A1', profs:[['Marina de Novaes Brechiani','MNB',21],['Natália Biondi Gaggini Robles','NBG',2],['Thais Catharine Cardozo Esteves','TCE',1]]},
-    {grupo:'A2', profs:[['Natália Biondi Gaggini Robles','NBG',32]]},
-    {grupo:'A3', profs:[['André Alessandro de Paula','AAP',1],['Arthur Rodrigues Rios Toledo de Castro','ARC',2],['Poliana Banqueri da Silva Guimarães','PBS',1],['Rafael Camargo Felisbino','RCF',2],['Sofia Freire','SOF',117],['Thiago Frid Figueiredo Rossi','TFR',5],['Vinicius da Silva Cerqueira','VSI',30]]},
-    {grupo:'B1', profs:[['Beatriz Santiago de Souza','BSO',275],['Guilherme Silva Morimoto','GSM',230],['Jenifer de Jesus Silva','JJS',316],['Juliana Perucci','JPE',235],['Nicolau Rafael Guimarães Coelho','NRG',80],['Rafael Rocha Ferreira','RFE',286]]},
-    {grupo:'B2', profs:[['Anna Carolina Balbino Gatti Baani','ANB',188],['Bruna Cembranelli Fazenda','BCF',271],['Nicolau Rafael Guimarães Coelho','NRG',42],['Vanessa de Cassia Castrequini Rosa','VCR',247]]},
-    {grupo:'B3', profs:[['Anna Carolina Balbino Gatti Baani','ANB',79],['Guilherme Silva Morimoto','GSM',56],['Juliana Perucci','JPE',74],['Letícia Meneghini Fontes','LMI',254],['Nicolau Rafael Guimarães Coelho','NRG',80]]},
-    {grupo:'C', profs:[['Erik Mota Coppi','ECO',209],['Rafael Camargo Felisbino','RCF',141],['Thiago Frid Figueiredo Rossi','TFR',142],['Vinicius da Silva Cerqueira','VSI',97]]},
-    {grupo:'D1', profs:[['Bianca Bolanhi Camacho','BBO',349],['Jessica Cerqueira Silva','JQS',461]]},
-    {grupo:'E1', profs:[['Aline Ferreira Miron','ALF',316],['André Alessandro de Paula','AAP',29],['Daniela Prandi Pedro Ricca','DPR',155],['Joice Ramos Miranda','JRM',157],['Júlia Priego Lopes da Silva','JPL',407],['Paloma da Silva Santos','PSI',447],['Vinicius da Silva Cerqueira','VSI',7],['Vinícius Ronchi Arruda','VRO',287]]},
-    {grupo:'E2', profs:[['André Alessandro de Paula','AAP',54],['Arthur Rodrigues Rios Toledo de Castro','ARC',379],['Camila Alves Magalhães de Paula','CAL',386],['Jackeline Romeu Torres','JRT',285],['Mariana Borges de Menezes Fávaro','MBF',185],['Rafael Camargo Felisbino','RCF',63],['Rafael Yepez do Lago','RYL',385],['Richard Ruan Leo da Silva','RRU',316]]},
-  ];
-
-  document.getElementById('tb-socios').innerHTML = sociosData.map(g => {
-    return `<tr style="border-bottom: 2px solid var(--gray2); font-weight: 600; background: rgba(0,0,0,0.02);">
-      <td colspan="3" style="padding: 12px 16px; color: var(--navy);">Grupo ${g.grupo}</td>
-    </tr>` + g.profs.map(p => `<tr>
-      <td style="padding: 9px 16px; border-bottom: 1px solid #f2f5f7;"></td>
-      <td style="padding: 9px 16px; border-bottom: 1px solid #f2f5f7; color: var(--dark);">${p[0]}</td>
-      <td class="tn" style="padding: 9px 16px; border-bottom: 1px solid #f2f5f7; font-weight: 600; color: var(--navy);">${p[2].toLocaleString('pt-BR')}</td>
-    </tr>`).join('');
-  }).join('');
+function showTab(id, btn) {
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  btn.classList.add('active');
 }
 </script>
 </body>
